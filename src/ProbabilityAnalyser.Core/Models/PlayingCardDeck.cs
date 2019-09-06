@@ -96,5 +96,12 @@ namespace ProbabilityAnalyser.Core.Models
 			return list.ToArray();
 		}
 
+
+		public override string ToString()
+		{
+			var c = Cards.Length;
+			var str = $"Deck with {c} cards";
+			return str;
+		}
 	}
 }
