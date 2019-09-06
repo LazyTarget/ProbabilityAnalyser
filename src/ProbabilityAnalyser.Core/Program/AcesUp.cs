@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using ProbabilityAnalyser.Core.Extensions;
 using ProbabilityAnalyser.Core.Models;
 
 namespace ProbabilityAnalyser.Core.Program
@@ -24,12 +26,15 @@ namespace ProbabilityAnalyser.Core.Program
 
 			object result = null;
 
+
+			// 1. Deal four cards in a row face up.
+			PlayingCard[] faceUpCards = deck.DrawMany(4);
+
+
 			int loops = 0;
 			while (!deck.IsEmpty)
 			{
-				// 1. Deal four cards in a row face up.
-				var drawnCards = deck.DrawMany(4);
-
+				faceUpCards = HandleChecks(faceUpCards);
 
 
 				loops++;
@@ -39,6 +44,28 @@ namespace ProbabilityAnalyser.Core.Program
 
 
 			return result;
+		}
+
+
+		protected virtual PlayingCard[] HandleChecks(PlayingCard[] faceUpCards)
+		{
+			var list = faceUpCards.ToList();
+
+			// 2. If there are two or more cards of the same suit, discard all but the highest-ranked card of that suit. Aces rank high.
+			var groupBySuits = faceUpCards.GroupBy(x => x.Suit);
+			foreach (var group in groupBySuits)
+			{
+				var suit = group.Key;
+				var count = group.Count();
+				if (count >= 2)
+				{
+					var remainingCard = group.AllButHighestCardOfSuit(suit, aceRankHigh: true);
+					var removed = list.RemoveAll(x => x.Suit == suit && x != remainingCard);
+					Console.WriteLine($"Removed {removed} cards of suit '{suit}'");
+				}
+			}
+
+			return list.ToArray();
 		}
 	}
 }

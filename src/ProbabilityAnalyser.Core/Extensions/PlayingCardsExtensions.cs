@@ -46,5 +46,13 @@ namespace ProbabilityAnalyser.Core.Extensions
 			return str;
 		}
 
+
+		public static PlayingCard AllButHighestCardOfSuit(this IEnumerable<PlayingCard> cards, PlayingCardSuit suit, bool aceRankHigh = true)
+		{
+			var comparer = new PlayingCardRankComparer {AceRankHigh = aceRankHigh};
+			var cardsOfSuit = cards.Where(x => x.Suit == suit).OrderByDescending(x => x.Rank, comparer).ToList();
+			var result = cardsOfSuit.FirstOrDefault();
+			return result;
+		}
 	}
 }
