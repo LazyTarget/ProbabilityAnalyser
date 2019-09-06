@@ -7,6 +7,9 @@ namespace ProbabilityAnalyser.Core.Models
 {
 	public class PlayingCardDeck
 	{
+		#region Static
+
+		private static readonly Random _random = new Random();
 		public static readonly PlayingCardDeck Standard52CardDeck;
 
 
@@ -44,12 +47,52 @@ namespace ProbabilityAnalyser.Core.Models
 			);
 		}
 
+		#endregion
+
 
 		public PlayingCardDeck(IEnumerable<PlayingCard> cards)
 		{
 			Cards = cards.ToArray();
 		}
 
-		public PlayingCard[] Cards { get; }
+		public PlayingCard[] Cards { get; private set; }
+
+		public bool IsEmpty => Cards.Length <= 0;
+
+
+		public void Shuffle()
+		{
+			var shuffled = Cards.OrderBy(c => _random.Next()).ToArray();
+			Cards = shuffled;
+		}
+
+		public PlayingCard Draw()
+		{
+			PlayingCard card;
+			if (Cards.Length < 1)
+			{
+				card = null;
+			}
+			else
+			{
+				var index = Cards.Length - 1;
+				card = Cards[index];
+				var cards = Cards.Take(index).ToArray();
+				Cards = cards;
+			}
+			return card;
+		}
+
+		public IEnumerable<PlayingCard> DrawMany(int count)
+		{
+			for (var i = 0; i < count; i++)
+			{
+				var card = Draw();
+				if (card == null)
+					break;
+				yield return card;
+			}
+		}
+
 	}
 }
