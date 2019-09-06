@@ -54,5 +54,21 @@ namespace ProbabilityAnalyser.Core.Extensions
 			var result = cardsOfSuit.FirstOrDefault();
 			return result;
 		}
+
+
+		public static PlayingCard[] PopTopCard(this PlayingCard[] cards)
+		{
+			PlayingCard card;
+			var result = PopTopCard(cards, out card);
+			return result;
+		}
+
+		public static PlayingCard[] PopTopCard(this PlayingCard[] cards, out PlayingCard card)
+		{
+			var index = cards.Length - 1;
+			card = cards[index];
+			var result = cards.Take(index).ToArray();
+			return result;
+		}
 	}
 }

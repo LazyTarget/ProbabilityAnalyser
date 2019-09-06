@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ProbabilityAnalyser.Core.Extensions;
 
 namespace ProbabilityAnalyser.Core.Models
 {
@@ -75,9 +76,12 @@ namespace ProbabilityAnalyser.Core.Models
 			}
 			else
 			{
-				var index = Cards.Length - 1;
-				card = Cards[index];
-				var cards = Cards.Take(index).ToArray();
+				//var index = Cards.Length - 1;
+				//card = Cards[index];
+				//var cards = Cards.Take(index).ToArray();
+				//Cards = cards;
+
+				var cards = Cards.PopTopCard(out card);
 				Cards = cards;
 			}
 			return card;
