@@ -35,25 +35,66 @@ namespace ProbabilityAnalyser.Core.Program
 
 			var context = new AcesUpRunContext(deck, cancellationToken);
 
-			// 1. Deal four cards in a row face up.
-			Deal4Cards(context);
-
 
 			int loops = 0;
-			while (!deck.IsEmpty)
+			bool gameover = false;
+			while (!gameover)
 			{
-				HandleChecks(context);
-
-				Deal4Cards(context);
-
+				gameover = !DealAndCheck(context);
 				loops++;
 			}
 
-			result = loops;
 
+			// No more cards to deal to piles, GAMEOVER!
+			var points = 52 - context.FaceUpCards.Length;
+			if (points == 48)
+			{
+				Console.WriteLine("Perfect game!!!");
+			}
+			else
+			{
+				Console.WriteLine($"Gameover with {points} points");
+			}
+
+			//// 1. Deal four cards in a row face up.
+			//Deal4Cards(context);
+
+
+			//while (!deck.IsEmpty)
+			//{
+			//	HandleChecks(context);
+
+			//	Deal4Cards(context);
+
+			//}
+
+			result = points;
 
 			return result;
 		}
+
+
+		private bool DealAndCheck(AcesUpRunContext context)
+		{
+			// Pseudo-flow
+			
+			if (!Deal4Cards(context))                           // 1
+			{
+				return false;
+			}
+			
+			var discarded = CheckAndDiscardSuits(context);      // 2
+			if (discarded)
+			{
+				if (MoveCardsIfHasEmptySpaces(context))			// 3
+				{
+					CheckAndDiscardSuits(context);				// 2
+				}
+			}
+
+			return !context.Deck.IsEmpty;
+		}
+
 
 
 		private void HandleChecks(AcesUpRunContext context)
@@ -92,11 +133,13 @@ namespace ProbabilityAnalyser.Core.Program
 			}
 		}
 
-		private void Deal4Cards(AcesUpRunContext context)
+		private bool Deal4Cards(AcesUpRunContext context)
 		{
 			// 1 & 5
 			var cards = context.Deck.DrawMany(4);
 			context.FaceUpCards.AppendCardsToPiles(cards);
+
+			return cards.Length > 0;
 		}
 
 		private void DrawUpToFourFaceUpCards(AcesUpRunContext context)
@@ -125,6 +168,8 @@ namespace ProbabilityAnalyser.Core.Program
 
 		private class AcesUpFaceUpCards
 		{
+			public int Length => Pile1.Length + Pile2.Length + Pile3.Length + Pile4.Length;
+
 			public PlayingCard[] Pile1 = new PlayingCard[0];
 			public PlayingCard[] Pile2 = new PlayingCard[0];
 			public PlayingCard[] Pile3 = new PlayingCard[0];
