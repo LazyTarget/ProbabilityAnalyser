@@ -25,7 +25,7 @@ namespace ProbabilityAnalyser.Core.Program
 			object result = null;
 
 			int loops = 0;
-			while (deck.IsEmpty)
+			while (!deck.IsEmpty)
 			{
 				// 1. Deal four cards in a row face up.
 				var drawnCards = deck.DrawMany(4);

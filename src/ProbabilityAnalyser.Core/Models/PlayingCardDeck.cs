@@ -83,15 +83,17 @@ namespace ProbabilityAnalyser.Core.Models
 			return card;
 		}
 
-		public IEnumerable<PlayingCard> DrawMany(int count)
+		public PlayingCard[] DrawMany(int count)
 		{
+			var list = new List<PlayingCard>();
 			for (var i = 0; i < count; i++)
 			{
 				var card = Draw();
 				if (card == null)
 					break;
-				yield return card;
+				list.Add(card);
 			}
+			return list.ToArray();
 		}
 
 	}
