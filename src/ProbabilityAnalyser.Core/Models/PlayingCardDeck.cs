@@ -11,12 +11,12 @@ namespace ProbabilityAnalyser.Core.Models
 		#region Static
 
 		private static readonly Random _random = new Random();
-		public static readonly PlayingCardDeck Standard52CardDeck;
+		private static readonly List<PlayingCard> _standard52CardDeck;
 
 
 		static PlayingCardDeck()
 		{
-			var standard = new List<PlayingCard>();
+			_standard52CardDeck = new List<PlayingCard>();
 
 			var suits = Enum.GetValues(typeof(PlayingCardSuit)).OfType<PlayingCardSuit>().ToArray();
 			var ranks = Enum.GetValues(typeof(PlayingCardRank)).OfType<PlayingCardRank>().ToArray();
@@ -37,15 +37,15 @@ namespace ProbabilityAnalyser.Core.Models
 						continue;
 
 					var card = new PlayingCard(suit, rank);
-					standard.Add(card);
+					_standard52CardDeck.Add(card);
 				}
 			}
+		}
 
-
-
-			Standard52CardDeck = new PlayingCardDeck(
-				standard.ToArray()
-			);
+		public static PlayingCardDeck Standard52CardDeck()
+		{
+			var deck = new PlayingCardDeck(_standard52CardDeck.ToArray());
+			return deck;
 		}
 
 		#endregion

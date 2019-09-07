@@ -10,13 +10,13 @@ namespace ProbabilityAnalyser.Core.Program
 {
 	public class AcesUp
 	{
-		public object Run(PlayingCardDeck deck)
+		public int Run(PlayingCardDeck deck)
 		{
 			var result = Run(deck, CancellationToken.None);
 			return result;
 		}
 
-		public object Run(PlayingCardDeck deck, CancellationToken cancellationToken)
+		public int Run(PlayingCardDeck deck, CancellationToken cancellationToken)
 		{
 			/*
 				1. Deal four cards in a row face up.
@@ -30,8 +30,6 @@ namespace ProbabilityAnalyser.Core.Program
 				When the game ends, the number of discarded cards is your score. The maximum score (and thus the score necessary to win) is 48, which means all cards have been discarded except for the four aces, thus the name of the game.
 			*/
 
-
-			object result = null;
 
 			var context = new AcesUpRunContext(deck, cancellationToken);
 
@@ -68,9 +66,7 @@ namespace ProbabilityAnalyser.Core.Program
 
 			//}
 
-			result = points;
-
-			return result;
+			return points;
 		}
 
 

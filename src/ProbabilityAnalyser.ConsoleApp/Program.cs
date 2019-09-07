@@ -27,7 +27,7 @@ namespace ProbabilityAnalyser.ConsoleApp
 
 		private static void Run()
 		{
-			var deck = PlayingCardDeck.Standard52CardDeck;
+			var deck = PlayingCardDeck.Standard52CardDeck();
 
 			var program = new AcesUp();
 			var result = program.Run(deck);
