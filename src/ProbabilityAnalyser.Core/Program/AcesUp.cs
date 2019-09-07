@@ -45,10 +45,13 @@ namespace ProbabilityAnalyser.Core.Program
 
 			// No more cards to deal to piles, GAMEOVER!
 			var points = 52 - context.FaceUpCards.Length;
-			//if (points == 48)
-			//{
-			//	Console.WriteLine("Perfect game!!!");
-			//}
+			if (points == 48)
+			{
+				if (context.FaceUpCards.Top().Count() == 4)
+					points = 100;
+
+				//Console.WriteLine("Perfect game!!!");
+			}
 			//else
 			//{
 			//	Console.WriteLine($"Gameover with {points} points");

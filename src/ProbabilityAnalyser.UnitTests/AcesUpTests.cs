@@ -31,10 +31,11 @@ namespace ProbabilityAnalyser.UnitTests
 			Parallel.For(0, NR_OF_INSTANCES, (i, s) =>
 			{
 				var pts = RunInstance();
-				if (pts == 48)
+				if (pts > 48)
 				{
 					wins++;
 				}
+				Console.WriteLine($"{pts} points");
 			});
 
 			Console.WriteLine($"{wins} wins out of {NR_OF_INSTANCES} == {(wins/NR_OF_INSTANCES):P}");
