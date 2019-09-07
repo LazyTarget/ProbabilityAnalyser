@@ -10,16 +10,19 @@ namespace ProbabilityAnalyser.Core.Program
 {
 	public class AcesUp
 	{
-		public Func<AcesUpRunContext, bool> MovingStrategy;
-
-
 		public int Run(PlayingCardDeck deck)
 		{
 			var result = Run(deck, CancellationToken.None);
 			return result;
 		}
-
 		public int Run(PlayingCardDeck deck, CancellationToken cancellationToken)
+		{
+			var context = new AcesUpRunContext(deck, cancellationToken);
+			var result = Run(context);
+			return result;
+		}
+
+		public int Run(AcesUpRunContext context)
 		{
 			/*
 				1. Deal four cards in a row face up.
@@ -34,7 +37,6 @@ namespace ProbabilityAnalyser.Core.Program
 			*/
 
 
-			var context = new AcesUpRunContext(deck, cancellationToken);
 
 
 			int loops = 0;
@@ -141,7 +143,7 @@ namespace ProbabilityAnalyser.Core.Program
 
 		private bool MoveCardsIfHasEmptySpaces(AcesUpRunContext context)
 		{
-			Func<AcesUpRunContext, bool> movingStrategy = MovingStrategy;
+			Func<AcesUpRunContext, bool> movingStrategy = context.MovingStrategy;
 			if (movingStrategy == null)
 			{
 				movingStrategy = MoveFirstAvailableCardToEmptySpace;
@@ -166,17 +168,26 @@ namespace ProbabilityAnalyser.Core.Program
 
 		public static bool MoveFirstAvailableCardToEmptySpace(AcesUpRunContext context)
 		{
+			PlayingCard peek;
 			PlayingCard card;
 
-			// Get card...
-			if (context.FaceUpCards.Pile1.Count() > 1)
-				context.FaceUpCards.Pile1 = context.FaceUpCards.Pile1.PopTopCard(out card);
-			else if (context.FaceUpCards.Pile2.Count() > 1)
-				context.FaceUpCards.Pile2 = context.FaceUpCards.Pile2.PopTopCard(out card);
-			else if (context.FaceUpCards.Pile3.Count() > 1)
-				context.FaceUpCards.Pile3 = context.FaceUpCards.Pile3.PopTopCard(out card);
-			else if (context.FaceUpCards.Pile4.Count() > 1)
-				context.FaceUpCards.Pile4 = context.FaceUpCards.Pile4.PopTopCard(out card);
+			// Get card...;
+			if ((peek = TryPopCardFromPile(ref context.FaceUpCards.Pile1, context.HardMode)) != null)
+			{
+				card = peek;
+			}
+			else if ((peek = TryPopCardFromPile(ref context.FaceUpCards.Pile2, context.HardMode)) != null)
+			{
+				card = peek;
+			}
+			else if ((peek = TryPopCardFromPile(ref context.FaceUpCards.Pile3, context.HardMode)) != null)
+			{
+				card = peek;
+			}
+			else if ((peek = TryPopCardFromPile(ref context.FaceUpCards.Pile4, context.HardMode)) != null)
+			{
+				card = peek;
+			}
 			else
 				return false;		// no piles have any cards available to move...
 
@@ -193,6 +204,17 @@ namespace ProbabilityAnalyser.Core.Program
 		}
 
 
+		private static PlayingCard TryPopCardFromPile(ref PlayingCard[] pile, bool hardMode)
+		{
+			PlayingCard card = null;
+			if (pile.Count() > 1)
+			{
+				card = pile.Last();
+				if (!hardMode || card.Rank == PlayingCardRank.Ace)
+					pile = pile.Take(pile.Length - 1).ToArray();
+			}
+			return card;
+		}
 
 
 		// Utils
@@ -256,15 +278,19 @@ namespace ProbabilityAnalyser.Core.Program
 
 		public class AcesUpRunContext
 		{
-			public AcesUpRunContext(PlayingCardDeck deck, CancellationToken cancellationToken)
+			public AcesUpRunContext(PlayingCardDeck deck, CancellationToken cancellationToken, bool hardMode = false)
 			{
 				Deck = deck;
 				Token = cancellationToken;
+				HardMode = hardMode;
 			}
 
-			public PlayingCardDeck Deck { get; set; }
-			public AcesUpFaceUpCards FaceUpCards { get; set; } = new AcesUpFaceUpCards();
-			public CancellationToken Token { get; set; }
+			public PlayingCardDeck Deck { get; }
+			public AcesUpFaceUpCards FaceUpCards { get; } = new AcesUpFaceUpCards();
+			public CancellationToken Token { get; }
+			public bool HardMode { get; set;  }
+
+			public Func<AcesUpRunContext, bool> MovingStrategy;
 		}
 
 		public class AcesUpFaceUpCards
