@@ -116,24 +116,14 @@ namespace ProbabilityAnalyser.Core.Program
 				{
 					var remainingCard = group.AllButHighestCardOfSuit(suit, aceRankHigh: true);
 
-					var removed = group.Count(c =>
-					{
-						if (c.Suit != suit)
-							return false;
-						if (c == remainingCard)
-							return false;
-
-						var d = context.FaceUpCards.Discard(c);
-						return d;
-					});
-
+					var removed = group
+						.Where(c => c.Suit != suit)
+						.Where(c => c != remainingCard)
+						.Count(c => context.FaceUpCards.Discard(c));
 
 					if (removed > 0)
 					{
 						return true;
-
-						DrawUpToFourFaceUpCards(context);
-						HandleChecks(context);
 					}
 				}
 			}
@@ -170,21 +160,23 @@ namespace ProbabilityAnalyser.Core.Program
 		{
 			PlayingCard peek;
 			PlayingCard card;
+			var hardMode = context.HardMode;
+			var cards = context.FaceUpCards;
 
 			// Get card...;
-			if ((peek = TryPopCardFromPile(ref context.FaceUpCards.Pile1, context.HardMode)) != null)
+			if (cards.Pile1.Length > 1 && (peek = TryPopCardFromPile(ref cards.Pile1, hardMode)) != null)
 			{
 				card = peek;
 			}
-			else if ((peek = TryPopCardFromPile(ref context.FaceUpCards.Pile2, context.HardMode)) != null)
+			else if (cards.Pile2.Length > 1 && (peek = TryPopCardFromPile(ref cards.Pile2, hardMode)) != null)
 			{
 				card = peek;
 			}
-			else if ((peek = TryPopCardFromPile(ref context.FaceUpCards.Pile3, context.HardMode)) != null)
+			else if (cards.Pile3.Length > 1 && (peek = TryPopCardFromPile(ref cards.Pile3, hardMode)) != null)
 			{
 				card = peek;
 			}
-			else if ((peek = TryPopCardFromPile(ref context.FaceUpCards.Pile4, context.HardMode)) != null)
+			else if (cards.Pile4.Length > 1 && (peek = TryPopCardFromPile(ref cards.Pile4, hardMode)) != null)
 			{
 				card = peek;
 			}
@@ -193,6 +185,7 @@ namespace ProbabilityAnalyser.Core.Program
 
 			// Move card...
 			context.FaceUpCards.AppendOneToEmptyPile(card);
+
 			return true;
 		}
 
@@ -207,7 +200,7 @@ namespace ProbabilityAnalyser.Core.Program
 		private static PlayingCard TryPopCardFromPile(ref PlayingCard[] pile, bool hardMode)
 		{
 			PlayingCard card = null;
-			if (pile.Count() > 1)
+			if (pile.Length > 1)
 			{
 				card = pile.Last();
 				if (!hardMode || card.Rank == PlayingCardRank.Ace)

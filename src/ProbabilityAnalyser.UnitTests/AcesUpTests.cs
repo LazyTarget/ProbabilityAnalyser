@@ -44,10 +44,10 @@ namespace ProbabilityAnalyser.UnitTests
 				{
 					wins++;
 				}
-				Console.WriteLine($"{pts} points");
+				//Console.WriteLine($"{pts} points");
 			});
 
-			Console.WriteLine($"{wins} wins out of {NR_OF_INSTANCES} == {(wins/NR_OF_INSTANCES):P}");
+			Console.WriteLine($"{wins} wins out of {NR_OF_INSTANCES} == {(wins/NR_OF_INSTANCES):P4}");
 		}
 
 
@@ -66,10 +66,10 @@ namespace ProbabilityAnalyser.UnitTests
 				{
 					wins++;
 				}
-				Console.WriteLine($"{pts} points");
+				//Console.WriteLine($"{pts} points");
 			});
 
-			Console.WriteLine($"{wins} wins out of {NR_OF_INSTANCES} == {(wins / NR_OF_INSTANCES):P}");
+			Console.WriteLine($"{wins} wins out of {NR_OF_INSTANCES} == {(wins / NR_OF_INSTANCES):P4}");
 		}
 
 
@@ -87,10 +87,10 @@ namespace ProbabilityAnalyser.UnitTests
 				{
 					wins++;
 				}
-				Console.WriteLine($"{pts} points");
+				//Console.WriteLine($"{pts} points");
 			});
 
-			Console.WriteLine($"{wins} wins out of {NR_OF_INSTANCES} == {(wins / NR_OF_INSTANCES):P}");
+			Console.WriteLine($"{wins} wins out of {NR_OF_INSTANCES} == {(wins / NR_OF_INSTANCES):P4}");
 		}
 
 
@@ -110,10 +110,10 @@ namespace ProbabilityAnalyser.UnitTests
 				{
 					wins++;
 				}
-				Console.WriteLine($"{pts} points");
+				//Console.WriteLine($"{pts} points");
 			});
 
-			Console.WriteLine($"{wins} wins out of {NR_OF_INSTANCES} == {(wins / NR_OF_INSTANCES):P}");
+			Console.WriteLine($"{wins} wins out of {NR_OF_INSTANCES} == {(wins / NR_OF_INSTANCES):P4}");
 		}
 
 	}
