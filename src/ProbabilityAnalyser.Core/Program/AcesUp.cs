@@ -10,6 +10,9 @@ namespace ProbabilityAnalyser.Core.Program
 {
 	public class AcesUp
 	{
+		public Func<AcesUpRunContext, bool> MovingStrategy;
+
+
 		public int Run(PlayingCardDeck deck)
 		{
 			var result = Run(deck, CancellationToken.None);
@@ -138,14 +141,11 @@ namespace ProbabilityAnalyser.Core.Program
 
 		private bool MoveCardsIfHasEmptySpaces(AcesUpRunContext context)
 		{
-			Func<AcesUpRunContext, bool> movingStrategy;
-
-			// Strategy 1
-			movingStrategy = MoveFirstAvailableCardToEmptySpace;
-
-			//// Strategy 2
-			//movingStrategy = MoveCardBasedOnCardsUnderTop;		// todo: implement
-
+			Func<AcesUpRunContext, bool> movingStrategy = MovingStrategy;
+			if (movingStrategy == null)
+			{
+				movingStrategy = MoveFirstAvailableCardToEmptySpace;
+			}
 
 			//bool moved;
 			//bool changed = false;
@@ -164,7 +164,7 @@ namespace ProbabilityAnalyser.Core.Program
 		}
 
 
-		private bool MoveFirstAvailableCardToEmptySpace(AcesUpRunContext context)
+		public static bool MoveFirstAvailableCardToEmptySpace(AcesUpRunContext context)
 		{
 			PlayingCard card;
 
@@ -185,7 +185,7 @@ namespace ProbabilityAnalyser.Core.Program
 			return true;
 		}
 
-		private bool MoveCardBasedOnCardsUnderTop(AcesUpRunContext context)
+		public static bool MoveCardBasedOnCardsUnderTop(AcesUpRunContext context)
 		{
 			// todo: Implement "AI" which remembers the card under the Top card(s), for better 'moving-strategy'
 
@@ -254,7 +254,7 @@ namespace ProbabilityAnalyser.Core.Program
 		}
 
 
-		private class AcesUpRunContext
+		public class AcesUpRunContext
 		{
 			public AcesUpRunContext(PlayingCardDeck deck, CancellationToken cancellationToken)
 			{
@@ -267,7 +267,7 @@ namespace ProbabilityAnalyser.Core.Program
 			public CancellationToken Token { get; set; }
 		}
 
-		private class AcesUpFaceUpCards
+		public class AcesUpFaceUpCards
 		{
 			public int Length => Pile1.Length + Pile2.Length + Pile3.Length + Pile4.Length;
 
