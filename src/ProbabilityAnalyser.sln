@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29123.88
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProbabilityAnalyser.ConsoleApp", "ProbabilityAnalyser.ConsoleApp\ProbabilityAnalyser.ConsoleApp.csproj", "{393ED5CA-8D0D-47F0-8AAB-DDBA34FEA133}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProbabilityAnalyser.Core", "ProbabilityAnalyser.Core\ProbabilityAnalyser.Core.csproj", "{B02E72D8-EFB0-46C9-B6A6-6017B311444A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProbabilityAnalyser.Core", "ProbabilityAnalyser.Core\ProbabilityAnalyser.Core.csproj", "{B02E72D8-EFB0-46C9-B6A6-6017B311444A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProbabilityAnalyser.UnitTests", "ProbabilityAnalyser.UnitTests\ProbabilityAnalyser.UnitTests.csproj", "{F7C6EC92-4CAF-4889-9E52-2EE976FF1C47}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{B02E72D8-EFB0-46C9-B6A6-6017B311444A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B02E72D8-EFB0-46C9-B6A6-6017B311444A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B02E72D8-EFB0-46C9-B6A6-6017B311444A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7C6EC92-4CAF-4889-9E52-2EE976FF1C47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7C6EC92-4CAF-4889-9E52-2EE976FF1C47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7C6EC92-4CAF-4889-9E52-2EE976FF1C47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7C6EC92-4CAF-4889-9E52-2EE976FF1C47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
