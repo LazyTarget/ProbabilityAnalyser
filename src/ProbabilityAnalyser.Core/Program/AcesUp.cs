@@ -45,14 +45,14 @@ namespace ProbabilityAnalyser.Core.Program
 
 			// No more cards to deal to piles, GAMEOVER!
 			var points = 52 - context.FaceUpCards.Length;
-			if (points == 48)
-			{
-				Console.WriteLine("Perfect game!!!");
-			}
-			else
-			{
-				Console.WriteLine($"Gameover with {points} points");
-			}
+			//if (points == 48)
+			//{
+			//	Console.WriteLine("Perfect game!!!");
+			//}
+			//else
+			//{
+			//	Console.WriteLine($"Gameover with {points} points");
+			//}
 
 			//// 1. Deal four cards in a row face up.
 			//Deal4Cards(context);
@@ -304,7 +304,7 @@ namespace ProbabilityAnalyser.Core.Program
 					{
 						return false;
 					}
-					Console.WriteLine($"Discarded \"{card}\"");
+					//Console.WriteLine($"Discarded \"{card}\"");
 					return true;
 				}
 				else

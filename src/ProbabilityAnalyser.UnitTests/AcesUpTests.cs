@@ -12,11 +12,12 @@ namespace ProbabilityAnalyser.UnitTests
 		protected virtual int RunInstance()
 		{
 			var deck = PlayingCardDeck.Standard52CardDeck();
+			deck.Shuffle();
 
 			var program = new AcesUp();
 			var points = program.Run(deck);
 
-			Console.WriteLine("AcesUp :: Result = {0}", points);
+			//Console.WriteLine("AcesUp :: Result = {0}", points);
 			return points;
 		}
 
@@ -24,12 +25,19 @@ namespace ProbabilityAnalyser.UnitTests
 		[TestMethod]
 		public void TestInstances()
 		{
-			int NR_OF_INSTANCES = 10;
+			int NR_OF_INSTANCES = 10000;
 
+			double wins = 0;
 			Parallel.For(0, NR_OF_INSTANCES, (i, s) =>
 			{
-				RunInstance();
+				var pts = RunInstance();
+				if (pts == 48)
+				{
+					wins++;
+				}
 			});
+
+			Console.WriteLine($"{wins} wins out of {NR_OF_INSTANCES} == {(wins/NR_OF_INSTANCES):P}");
 		}
 
 	}
