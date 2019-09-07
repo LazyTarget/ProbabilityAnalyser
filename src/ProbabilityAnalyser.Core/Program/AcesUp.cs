@@ -82,19 +82,121 @@ namespace ProbabilityAnalyser.Core.Program
 			{
 				return false;
 			}
-			
-			var discarded = CheckAndDiscardSuits(context);      // 2
-			if (discarded)
+
+
+			while (CheckAndDiscardSuits(context))               // 2
 			{
-				if (MoveCardsIfHasEmptySpaces(context))			// 3
+				if (MoveCardsIfHasEmptySpaces(context))         // 3
 				{
-					CheckAndDiscardSuits(context);				// 2
+					//CheckAndDiscardSuits(context);              // 2
 				}
+				else
+					break;
 			}
+			
 
 			return !context.Deck.IsEmpty;
 		}
 
+		private bool CheckAndDiscardSuits(AcesUpRunContext context)
+		{
+			var top = context.FaceUpCards.Top().ToArray();
+
+			// 2. If there are two or more cards of the same suit, discard all but the highest-ranked card of that suit. Aces rank high.
+			var groupBySuits = top.GroupBy(x => x.Suit);
+			foreach (var group in groupBySuits)
+			{
+				var suit = group.Key;
+				var count = group.Count();
+				if (count >= 2)
+				{
+					var remainingCard = group.AllButHighestCardOfSuit(suit, aceRankHigh: true);
+
+					var removed = group.Count(c =>
+					{
+						if (c.Suit != suit)
+							return false;
+						if (c == remainingCard)
+							return false;
+
+						var d = context.FaceUpCards.Discard(c);
+						return d;
+					});
+
+
+					if (removed > 0)
+					{
+						return true;
+
+						DrawUpToFourFaceUpCards(context);
+						HandleChecks(context);
+					}
+				}
+			}
+			return false;
+		}
+		
+
+		private bool MoveCardsIfHasEmptySpaces(AcesUpRunContext context)
+		{
+			Func<AcesUpRunContext, bool> movingStrategy;
+
+			// Strategy 1
+			movingStrategy = MoveFirstAvailableCardToEmptySpace;
+
+			//// Strategy 2
+			//movingStrategy = MoveCardBasedOnCardsUnderTop;		// todo: implement
+
+
+			//bool moved;
+			//bool changed = false;
+			//do
+			//{
+			//	moved = movingStrategy(context);
+			//	if (moved)
+			//		changed = true;
+
+			//} while (moved);
+
+
+			var changed = movingStrategy(context);
+
+			return changed;
+		}
+
+
+		private bool MoveFirstAvailableCardToEmptySpace(AcesUpRunContext context)
+		{
+			PlayingCard card;
+
+			// Get card...
+			if (context.FaceUpCards.Pile1.Count() > 1)
+				context.FaceUpCards.Pile1 = context.FaceUpCards.Pile1.PopTopCard(out card);
+			else if (context.FaceUpCards.Pile2.Count() > 1)
+				context.FaceUpCards.Pile2 = context.FaceUpCards.Pile2.PopTopCard(out card);
+			else if (context.FaceUpCards.Pile3.Count() > 1)
+				context.FaceUpCards.Pile3 = context.FaceUpCards.Pile3.PopTopCard(out card);
+			else if (context.FaceUpCards.Pile4.Count() > 1)
+				context.FaceUpCards.Pile4 = context.FaceUpCards.Pile4.PopTopCard(out card);
+			else
+				return false;		// no piles have any cards available to move...
+
+			// Move card...
+			context.FaceUpCards.AppendOneToEmptyPile(card);
+			return true;
+		}
+
+		private bool MoveCardBasedOnCardsUnderTop(AcesUpRunContext context)
+		{
+			// todo: Implement "AI" which remembers the card under the Top card(s), for better 'moving-strategy'
+
+			throw new NotImplementedException();
+		}
+
+
+
+
+		// Utils
 
 
 		private void HandleChecks(AcesUpRunContext context)
@@ -206,6 +308,7 @@ namespace ProbabilityAnalyser.Core.Program
 					{
 						return false;
 					}
+					Console.WriteLine($"Discarded \"{card}\"");
 					return true;
 				}
 				else
