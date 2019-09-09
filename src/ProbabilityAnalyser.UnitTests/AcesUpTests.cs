@@ -10,6 +10,12 @@ namespace ProbabilityAnalyser.UnitTests
 	[TestClass]
 	public class AcesUpTests
 	{
+		static AcesUpTests()
+		{
+			if (System.Diagnostics.Debugger.IsAttached)
+				NR_OF_INSTANCES = 1;
+		}
+
 		public static int NR_OF_INSTANCES = 10000;
 
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -117,7 +117,7 @@ namespace ProbabilityAnalyser.Core.Program
 					var remainingCard = group.AllButHighestCardOfSuit(suit, aceRankHigh: true);
 
 					var removed = group
-						.Where(c => c.Suit != suit)
+						.Where(c => c.Suit == suit)
 						.Where(c => c != remainingCard)
 						.Count(c => context.FaceUpCards.Discard(c));
 
