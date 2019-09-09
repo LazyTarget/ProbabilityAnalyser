@@ -45,6 +45,8 @@ namespace ProbabilityAnalyser.Core.Program
 			{
 				gameover = !DealAndCheck(context);
 				loops++;
+
+				PrintContext(context);
 			}
 
 
@@ -75,6 +77,41 @@ namespace ProbabilityAnalyser.Core.Program
 			//}
 
 			return points;
+		}
+
+		private void PrintContext(AcesUpRunContext context)
+		{
+			if (!System.Diagnostics.Debugger.IsAttached)
+				return;
+
+			var str = "";
+
+
+			var card = context.FaceUpCards.Pile1.LastOrDefault();
+			if (card != null)
+				str += $"{card?.ToShortString()} ";
+			else
+				str += $"   ";
+
+			card = context.FaceUpCards.Pile2.LastOrDefault();
+			if (card != null)
+				str += $"{card?.ToShortString()} ";
+			else
+				str += $"   ";
+
+			card = context.FaceUpCards.Pile3.LastOrDefault();
+			if (card != null)
+				str += $"{card?.ToShortString()} ";
+			else
+				str += $"   ";
+
+			card = context.FaceUpCards.Pile4.LastOrDefault();
+			if (card != null)
+				str += $"{card?.ToShortString()} ";
+			else
+				str += $"   ";
+
+			Console.WriteLine(str);
 		}
 
 
@@ -133,6 +170,9 @@ namespace ProbabilityAnalyser.Core.Program
 
 			if (discarded)
 			{
+				Console.WriteLine("::Discarded::");
+				PrintContext(context);
+
 				// Continue to check for cards to discard...
 				var r = CheckAndDiscardSuits(context);
 			}
@@ -161,6 +201,16 @@ namespace ProbabilityAnalyser.Core.Program
 
 
 			var changed = movingStrategy(context);
+			if (changed)
+			{
+				Console.WriteLine("::Moved::");
+				PrintContext(context);
+
+				if (context.FaceUpCards.Top().Count() < 4)
+				{
+					// todo: should move again... ?
+				}
+			}
 
 			return changed;
 		}
@@ -310,6 +360,10 @@ namespace ProbabilityAnalyser.Core.Program
 			// 1 & 5
 			var cards = context.Deck.DrawMany(4);
 			context.FaceUpCards.AppendCardsToPiles(cards);
+
+
+			Console.WriteLine("::Deal4::");
+			PrintContext(context);
 
 			return cards.Length > 0;
 		}

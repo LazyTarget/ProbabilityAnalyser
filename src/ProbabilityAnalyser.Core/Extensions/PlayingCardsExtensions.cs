@@ -8,6 +8,52 @@ namespace ProbabilityAnalyser.Core.Extensions
 {
 	public static class PlayingCardsExtensions
 	{
+		public static string ToShortString(this PlayingCard card)
+		{
+			string str = "";
+			if (card.Suit == PlayingCardSuit.Joker ||
+			    card.Rank == PlayingCardRank.Joker)
+			{
+				str = "JJ";
+			}
+			else
+			{
+				switch (card.Suit)
+				{
+					case PlayingCardSuit.Joker:
+						str += "J";
+						break;
+					default:
+						str += card.Suit.ToFriendlyString();
+						break;
+				}
+
+				switch (card.Rank)
+				{
+					case PlayingCardRank.Jack:
+						str += "J";
+						break;
+					case PlayingCardRank.Queen:
+						str += "Q";
+						break;
+					case PlayingCardRank.King:
+						str += "K";
+						break;
+					case PlayingCardRank.Ace:
+						str += "A";
+						break;
+					case PlayingCardRank.Joker:
+						str += "J";
+						break;
+					default:
+						var val = (int) card.Rank;
+						str += val.ToString();
+						break;
+				}
+			}
+			return str;
+		}
+
 		public static string ToFriendlyString(this PlayingCardSuit suit)
 		{
 			string str;
@@ -17,7 +63,28 @@ namespace ProbabilityAnalyser.Core.Extensions
 			}
 			else
 			{
-				str = suit.ToString();
+				switch (suit)
+				{
+					case PlayingCardSuit.Hearts:
+						str = "♡";
+						break;
+
+					case PlayingCardSuit.Diamonds:
+						str = "♦";
+						break;
+
+					case PlayingCardSuit.Spades:
+						str = "♠";
+						break;
+
+					case PlayingCardSuit.Clubs:
+						str = "♧";
+						break;
+
+					default:
+						str = suit.ToString();
+						break;
+				}
 			}
 			return str;
 		}
