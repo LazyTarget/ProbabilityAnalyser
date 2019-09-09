@@ -313,8 +313,9 @@ namespace ProbabilityAnalyser.Core.Program
 			}
 
 
-			public void AppendOneToEmptyPile(PlayingCard card)
+			public bool AppendOneToEmptyPile(PlayingCard card)
 			{
+				bool appended = true;
 				if (Pile1.Length <= 0)
 					AppendCardToPile(card, 1);
 				else if (!Pile2.Any())
@@ -323,6 +324,9 @@ namespace ProbabilityAnalyser.Core.Program
 					AppendCardToPile(card, 3);
 				else if (!Pile4.Any())
 					AppendCardToPile(card, 4);
+				else
+					appended = false;
+				return appended;
 			}
 
 			public void AppendCardToPile(PlayingCard card, int pile)
@@ -376,6 +380,7 @@ namespace ProbabilityAnalyser.Core.Program
 
 			public virtual bool MoveCard(AcesUpRunContext context)
 			{
+				bool moved;
 				PlayingCard peek;
 				PlayingCard card;
 				var hardMode = context.HardMode;
@@ -402,18 +407,23 @@ namespace ProbabilityAnalyser.Core.Program
 				{
 					// no piles have any cards available to move...
 
-					var moved = false;
+					moved = false;
 					if (_fallback != null)
 						moved = _fallback.MoveCard(context);
 					return moved;
 				}
 
 				// Move card...
-				context.FaceUpCards.AppendOneToEmptyPile(card);
+				moved = context.FaceUpCards.AppendOneToEmptyPile(card);
+				if (!moved)
+				{
+					throw new Exception($"Card was popped from a Pile but could not be Appended to an empty pile!");
+				}
 
-				return true;
+				return moved;
 			}
 		}
+
 
 		public class MoveCardBasedOnDirectlyUnderTopCard : ICardMovingStrategy
 		{
@@ -434,6 +444,7 @@ namespace ProbabilityAnalyser.Core.Program
 
 				var suitsOnTop = top.Select(c => c.Suit).Distinct().ToArray();
 
+				bool moved;
 				PlayingCard card;
 				PlayingCard peek;
 				var hardMode = context.HardMode;
@@ -461,19 +472,23 @@ namespace ProbabilityAnalyser.Core.Program
 				}
 				else
 				{
-					var moved = false;
+					moved = false;
 					if (_fallback != null)
 						moved = _fallback.MoveCard(context);
 					return moved;
 				}
 
-
 				// Move card...
-				context.FaceUpCards.AppendOneToEmptyPile(card);
+				moved = context.FaceUpCards.AppendOneToEmptyPile(card);
+				if (!moved)
+				{
+					throw new Exception($"Card was popped from a Pile but could not be Appended to an empty pile!");
+				}
 
-				return true;
+				return moved;
 			}
 		}
+
 
 		public class AcesToEmptyPiles : ICardMovingStrategy
 		{
@@ -528,8 +543,11 @@ namespace ProbabilityAnalyser.Core.Program
 				}
 
 				// Move card...
-				context.FaceUpCards.AppendOneToEmptyPile(card);
-				moved = true;
+				moved = context.FaceUpCards.AppendOneToEmptyPile(card);
+				if (!moved)
+				{
+					throw new Exception($"Card was popped from a Pile but could not be Appended to an empty pile!");
+				}
 
 				return moved;
 			}
