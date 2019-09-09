@@ -104,6 +104,7 @@ namespace ProbabilityAnalyser.Core.Program
 
 		private bool CheckAndDiscardSuits(AcesUpRunContext context)
 		{
+			var discarded = false;
 			var top = context.FaceUpCards.Top().ToArray();
 
 			// 2. If there are two or more cards of the same suit, discard all but the highest-ranked card of that suit. Aces rank high.
@@ -123,11 +124,20 @@ namespace ProbabilityAnalyser.Core.Program
 
 					if (removed > 0)
 					{
-						return true;
+						discarded = true;
+						break;
 					}
 				}
 			}
-			return false;
+
+
+			if (discarded)
+			{
+				// Continue to check for cards to discard...
+				var r = CheckAndDiscardSuits(context);
+			}
+
+			return discarded;
 		}
 		
 
@@ -228,6 +238,10 @@ namespace ProbabilityAnalyser.Core.Program
 			{
 				// Fallback to "dumber" strategy
 				var moved = MoveFirstAvailableCardToEmptySpace(context);
+				if (moved)
+				{
+
+				}
 				return moved;
 			}
 
