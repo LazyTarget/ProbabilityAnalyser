@@ -66,39 +66,17 @@ namespace ProbabilityAnalyser.Core.Program
 			{
 				if (context.FaceUpCards.Top().Count(x => x.Rank == PlayingCardRank.Ace) == 4)
 					points = 100;
-
-				//Console.WriteLine("Perfect game!!!");
 			}
-			//else
-			//{
-			//	Console.WriteLine($"Gameover with {points} points");
-			//}
-
-			//// 1. Deal four cards in a row face up.
-			//Deal4Cards(context);
-
-
-			//while (!deck.IsEmpty)
-			//{
-			//	HandleChecks(context);
-
-			//	Deal4Cards(context);
-
-			//}
 
 			return points;
 		}
 
 		private void PrintContext(AcesUpRunContext context, string extra)
 		{
-			//if (!System.Diagnostics.Debugger.IsAttached)
-			//	return;
-
 			if (_output == null)
 				return;
 
 			var str = "";
-
 
 			var card = context.FaceUpCards.Pile1.LastOrDefault();
 			if (card != null)
@@ -316,6 +294,8 @@ namespace ProbabilityAnalyser.Core.Program
 		}
 
 
+		// Utils
+
 		private static PlayingCard TryPopCardFromPile(ref PlayingCard[] pile, bool hardMode)
 		{
 			PlayingCard card = null;
@@ -329,44 +309,6 @@ namespace ProbabilityAnalyser.Core.Program
 		}
 
 
-		// Utils
-
-
-		private void HandleChecks(AcesUpRunContext context)
-		{
-			var top = context.FaceUpCards.Top().ToArray();
-
-			// 2. If there are two or more cards of the same suit, discard all but the highest-ranked card of that suit. Aces rank high.
-			var groupBySuits = top.GroupBy(x => x.Suit);
-			foreach (var group in groupBySuits)
-			{
-				var suit = group.Key;
-				var count = group.Count();
-				if (count >= 2)
-				{
-					var remainingCard = group.AllButHighestCardOfSuit(suit, aceRankHigh: true);
-
-					var removed = group.Count(c =>
-					{
-						if (c.Suit != suit)
-							return false;
-						if (c == remainingCard)
-							return false;
-
-						var d = context.FaceUpCards.Discard(c);
-						return d;
-					});
-					Console.WriteLine($"Removed {removed} cards of suit '{suit}'");
-
-
-					if (removed > 0)
-					{
-						DrawUpToFourFaceUpCards(context);
-						HandleChecks(context);
-					}
-				}
-			}
-		}
 
 		private bool Deal4Cards(AcesUpRunContext context)
 		{
@@ -379,17 +321,7 @@ namespace ProbabilityAnalyser.Core.Program
 
 			return cards.Length > 0;
 		}
-
-		private void DrawUpToFourFaceUpCards(AcesUpRunContext context)
-		{
-			var faceUpCards = context.FaceUpCards;
-			while (faceUpCards.Top().Count() < 4)
-			{
-				var card = context.Deck.Draw();
-				faceUpCards.AppendOneToEmptyPile(card);
-			}
-		}
-
+		
 
 		public class AcesUpRunContext
 		{
