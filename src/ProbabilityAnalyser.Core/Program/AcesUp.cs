@@ -506,19 +506,25 @@ namespace ProbabilityAnalyser.Core.Program
 					return false;       // has no empty piles...
 
 				bool moved;
-				PlayingCard peek;
 				PlayingCard card = null;
 				var hardMode = context.HardMode;
 				var cards = context.FaceUpCards;
 
 
-				var priority = PrioritizePiles(cards);
+				var priority = Prioritize(context.FaceUpCards);
 				foreach (var pile in priority)
 				{
+					if (hardMode)
+					{
+						if (pile.LastOrDefault()?.Rank != PlayingCardRank.Ace)
+						{
+							System.Diagnostics.Debug.WriteLine($"Not allowed to move cards other than '{PlayingCardRank.Ace}'");
+							continue;
+						}
+					}
+					
 					if (Peek(pile))
 					{
-						//card = Pop(ref pile);
-
 						if (pile == cards.Pile1)
 							card = Pop(ref context.FaceUpCards.Pile1);
 						else if (pile == cards.Pile2)
@@ -532,48 +538,28 @@ namespace ProbabilityAnalyser.Core.Program
 						break;
 				}
 
-				//if (cards.Pile1.Length > 1 && (peek = cards.Pile1.Last()) != null && peek.Rank == PlayingCardRank.Ace &&
-				//    (peek = TryPopCardFromPile(ref cards.Pile1, hardMode)) != null)
-				//{
-				//	card = peek;
-				//}
-				//else if (cards.Pile2.Length > 1 && (peek = cards.Pile2.Last()) != null && peek.Rank == PlayingCardRank.Ace &&
-				//         (peek = TryPopCardFromPile(ref cards.Pile2, hardMode)) != null)
-				//{
-				//	card = peek;
-				//}
-				//else if (cards.Pile3.Length > 1 && (peek = cards.Pile3.Last()) != null && peek.Rank == PlayingCardRank.Ace &&
-				//         (peek = TryPopCardFromPile(ref cards.Pile3, hardMode)) != null)
-				//{
-				//	card = peek;
-				//}
-				//else if (cards.Pile4.Length > 1 && (peek = cards.Pile4.Last()) != null && peek.Rank == PlayingCardRank.Ace &&
-				//         (peek = TryPopCardFromPile(ref cards.Pile4, hardMode)) != null)
-				//{
-				//	card = peek;
-				//}
-				//else
-				if (card == null)
+
+				if (card != null)
+				{
+					// Move card...
+					moved = context.FaceUpCards.AppendOneToEmptyPile(card);
+					if (!moved)
+					{
+						throw new Exception($"Card was popped from a pile but could not be appended to an empty pile!");
+					}
+				}
+				else
 				{
 					// no piles have any cards available to move...
 
 					moved = false;
 					if (_fallback != null)
 						moved = _fallback.MoveCard(context);
-					return moved;
 				}
-
-				// Move card...
-				moved = context.FaceUpCards.AppendOneToEmptyPile(card);
-				if (!moved)
-				{
-					throw new Exception($"Card was popped from a Pile but could not be Appended to an empty pile!");
-				}
-
 				return moved;
 			}
 
-			private IEnumerable<PlayingCard[]> PrioritizePiles(AcesUpFaceUpCards cards)
+			private IEnumerable<PlayingCard[]> Prioritize(AcesUpFaceUpCards cards)
 			{
 				yield return cards.Pile1;
 				yield return cards.Pile2;
