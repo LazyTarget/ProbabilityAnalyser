@@ -245,8 +245,10 @@ namespace ProbabilityAnalyser.Core.Program
 				Token = cancellationToken;
 				HardMode = hardMode;
 				MovingStrategy =
-					new MoveCardBasedOnDirectlyUnderTopCard(
-						new MoveFirstAvailableCardToEmptySpace()
+					new AcesToEmptyPiles(
+						new MoveCardBasedOnDirectlyUnderTopCard(
+							new MoveFirstAvailableCardToEmptySpace()
+						)
 					);
 			}
 
@@ -499,17 +501,17 @@ namespace ProbabilityAnalyser.Core.Program
 					card = peek;
 				}
 				else if (cards.Pile2.Length > 1 && (peek = cards.Pile2.Last()) != null && peek.Rank == PlayingCardRank.Ace &&
-				         (peek = TryPopCardFromPile(ref cards.Pile1, hardMode)) != null)
+				         (peek = TryPopCardFromPile(ref cards.Pile2, hardMode)) != null)
 				{
 					card = peek;
 				}
 				else if (cards.Pile3.Length > 1 && (peek = cards.Pile3.Last()) != null && peek.Rank == PlayingCardRank.Ace &&
-				         (peek = TryPopCardFromPile(ref cards.Pile1, hardMode)) != null)
+				         (peek = TryPopCardFromPile(ref cards.Pile3, hardMode)) != null)
 				{
 					card = peek;
 				}
 				else if (cards.Pile4.Length > 1 && (peek = cards.Pile4.Last()) != null && peek.Rank == PlayingCardRank.Ace &&
-				         (peek = TryPopCardFromPile(ref cards.Pile1, hardMode)) != null)
+				         (peek = TryPopCardFromPile(ref cards.Pile4, hardMode)) != null)
 				{
 					card = peek;
 				}
