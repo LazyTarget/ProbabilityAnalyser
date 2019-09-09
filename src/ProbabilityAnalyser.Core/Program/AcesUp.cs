@@ -507,32 +507,53 @@ namespace ProbabilityAnalyser.Core.Program
 
 				bool moved;
 				PlayingCard peek;
-				PlayingCard card;
+				PlayingCard card = null;
 				var hardMode = context.HardMode;
 				var cards = context.FaceUpCards;
 
-				// Get card...;
-				if (cards.Pile1.Length > 1 && (peek = cards.Pile1.Last()) != null && peek.Rank == PlayingCardRank.Ace &&
-				    (peek = TryPopCardFromPile(ref cards.Pile1, hardMode)) != null)
+
+				var priority = PrioritizePiles(cards);
+				foreach (var pile in priority)
 				{
-					card = peek;
+					if (Peek(pile))
+					{
+						//card = Pop(ref pile);
+
+						if (pile == cards.Pile1)
+							card = Pop(ref context.FaceUpCards.Pile1);
+						else if (pile == cards.Pile2)
+							card = Pop(ref context.FaceUpCards.Pile2);
+						else if (pile == cards.Pile3)
+							card = Pop(ref context.FaceUpCards.Pile3);
+						else if (pile == cards.Pile4)
+							card = Pop(ref context.FaceUpCards.Pile4);
+					}
+					if (card != null)
+						break;
 				}
-				else if (cards.Pile2.Length > 1 && (peek = cards.Pile2.Last()) != null && peek.Rank == PlayingCardRank.Ace &&
-				         (peek = TryPopCardFromPile(ref cards.Pile2, hardMode)) != null)
-				{
-					card = peek;
-				}
-				else if (cards.Pile3.Length > 1 && (peek = cards.Pile3.Last()) != null && peek.Rank == PlayingCardRank.Ace &&
-				         (peek = TryPopCardFromPile(ref cards.Pile3, hardMode)) != null)
-				{
-					card = peek;
-				}
-				else if (cards.Pile4.Length > 1 && (peek = cards.Pile4.Last()) != null && peek.Rank == PlayingCardRank.Ace &&
-				         (peek = TryPopCardFromPile(ref cards.Pile4, hardMode)) != null)
-				{
-					card = peek;
-				}
-				else
+
+				//if (cards.Pile1.Length > 1 && (peek = cards.Pile1.Last()) != null && peek.Rank == PlayingCardRank.Ace &&
+				//    (peek = TryPopCardFromPile(ref cards.Pile1, hardMode)) != null)
+				//{
+				//	card = peek;
+				//}
+				//else if (cards.Pile2.Length > 1 && (peek = cards.Pile2.Last()) != null && peek.Rank == PlayingCardRank.Ace &&
+				//         (peek = TryPopCardFromPile(ref cards.Pile2, hardMode)) != null)
+				//{
+				//	card = peek;
+				//}
+				//else if (cards.Pile3.Length > 1 && (peek = cards.Pile3.Last()) != null && peek.Rank == PlayingCardRank.Ace &&
+				//         (peek = TryPopCardFromPile(ref cards.Pile3, hardMode)) != null)
+				//{
+				//	card = peek;
+				//}
+				//else if (cards.Pile4.Length > 1 && (peek = cards.Pile4.Last()) != null && peek.Rank == PlayingCardRank.Ace &&
+				//         (peek = TryPopCardFromPile(ref cards.Pile4, hardMode)) != null)
+				//{
+				//	card = peek;
+				//}
+				//else
+				if (card == null)
 				{
 					// no piles have any cards available to move...
 
@@ -550,6 +571,34 @@ namespace ProbabilityAnalyser.Core.Program
 				}
 
 				return moved;
+			}
+
+			private IEnumerable<PlayingCard[]> PrioritizePiles(AcesUpFaceUpCards cards)
+			{
+				yield return cards.Pile1;
+				yield return cards.Pile2;
+				yield return cards.Pile3;
+				yield return cards.Pile4;
+			}
+
+			private bool Peek(PlayingCard[] pile)
+			{
+				PlayingCard peek;
+				PlayingCard card = null;
+				if (pile.Length > 1 && (peek = pile.Last()) != null && peek.Rank == PlayingCardRank.Ace &&
+				    (peek = pile.LastOrDefault()) != null)
+				{
+					card = peek;
+				}
+
+				return card != null;
+			}
+
+			private PlayingCard Pop(ref PlayingCard[] pile)
+			{
+				PlayingCard card;
+				pile = pile.PopTopCard(out card);
+				return card;
 			}
 		}
 
