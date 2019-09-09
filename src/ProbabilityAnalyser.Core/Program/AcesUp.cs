@@ -249,10 +249,8 @@ namespace ProbabilityAnalyser.Core.Program
 				Token = cancellationToken;
 				HardMode = hardMode;
 				MovingStrategy =
-					new AcesToEmptyPiles(
-						new MoveCardBasedOnDirectlyUnderTopCard(
-							new MoveFirstAvailableCardToEmptySpace()
-						)
+					new MoveCardBasedOnDirectlyUnderTopCard(
+						new MoveFirstAvailableCardToEmptySpace()
 					);
 			}
 
