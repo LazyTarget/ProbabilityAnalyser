@@ -54,7 +54,7 @@ namespace ProbabilityAnalyser.Core.Program
 			var points = 52 - context.FaceUpCards.Length;
 			if (points == 48)
 			{
-				if (context.FaceUpCards.Top().Count() == 4)
+				if (context.FaceUpCards.Top().Count(x => x.Rank == PlayingCardRank.Ace) == 4)
 					points = 100;
 
 				//Console.WriteLine("Perfect game!!!");
