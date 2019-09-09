@@ -30,14 +30,13 @@ namespace ProbabilityAnalyser.UnitTests
 
 		protected virtual int RunTest(Action<AcesUp.AcesUpRunContext> configure, int instances, bool parallel)
 		{
-			double wins = 0;
+			TextWriter output = null;
+			if (instances <= 1)
+				output = Console.Out;
 
+			double wins = 0;
 			Action<int, ParallelLoopState> action = (i, s) =>
 			{
-				TextWriter output = null;
-				if (instances <= 1)
-					output = Console.Out;
-
 				var pts = RunInstance(configure, output, i);
 				if (pts > 48)
 				{
@@ -46,6 +45,12 @@ namespace ProbabilityAnalyser.UnitTests
 				else if (pts == 48)
 				{
 					// Final 4 cards are not Aces
+				}
+
+
+				if (instances == 1)
+				{
+					output?.WriteLine($"Points: {pts}");
 				}
 			};
 
