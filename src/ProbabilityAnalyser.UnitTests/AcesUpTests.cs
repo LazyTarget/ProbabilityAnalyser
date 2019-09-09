@@ -30,7 +30,8 @@ namespace ProbabilityAnalyser.UnitTests
 		protected virtual int RunTest(Action<AcesUp.AcesUpRunContext> configure, int instances, bool parallel)
 		{
 			double wins = 0;
-			Parallel.For(0, instances, (i, s) =>
+
+			Action<int, ParallelLoopState> action = (i, s) =>
 			{
 				var pts = RunInstance(configure);
 				if (pts > 48)
@@ -41,7 +42,19 @@ namespace ProbabilityAnalyser.UnitTests
 				{
 					// Final 4 cards are not Aces
 				}
-			});
+			};
+
+			if (parallel)
+			{
+				var result = Parallel.For(0, instances, action);
+			}
+			else
+			{
+				for (var i = 0; i < instances; i++)
+				{
+					action(i, null);
+				}
+			}
 
 			Console.WriteLine($"{wins} wins out of {instances} == {(wins / instances):P4}");
 			return (int)wins;
