@@ -129,14 +129,14 @@ namespace ProbabilityAnalyser.Core.Program
 
 			if (_logFormatter != null)
 				str = _logFormatter.Invoke(str);
-			_output.WriteLine(str);
+			_output?.WriteLine(str);
 		}
 
 
 		private bool DealAndCheck(AcesUpRunContext context)
 		{
 			// Pseudo-flow
-			
+
 			if (!Deal4Cards(context))                           // 1
 			{
 				return false;
@@ -152,7 +152,7 @@ namespace ProbabilityAnalyser.Core.Program
 				else
 					break;
 			}
-			
+
 
 			return !context.Deck.IsEmpty;
 		}
@@ -196,7 +196,7 @@ namespace ProbabilityAnalyser.Core.Program
 
 			return discarded;
 		}
-		
+
 
 		private bool MoveCardsIfHasEmptySpaces(AcesUpRunContext context)
 		{
@@ -254,7 +254,7 @@ namespace ProbabilityAnalyser.Core.Program
 				card = peek;
 			}
 			else
-				return false;		// no piles have any cards available to move...
+				return false;       // no piles have any cards available to move...
 
 			// Move card...
 			context.FaceUpCards.AppendOneToEmptyPile(card);
@@ -268,7 +268,7 @@ namespace ProbabilityAnalyser.Core.Program
 
 			var top = context.FaceUpCards.Top().ToArray();
 			if (top.Length >= 4)
-				return false;		// no change
+				return false;       // no change
 
 			var suitsOnTop = top.Select(c => c.Suit).Distinct().ToArray();
 
@@ -278,22 +278,22 @@ namespace ProbabilityAnalyser.Core.Program
 			var cards = context.FaceUpCards;
 
 			if (cards.Pile1.Length > 1 && (peek = cards.Pile1.Reverse().ElementAtOrDefault(1)) != null && suitsOnTop.Contains(peek.Suit) &&
-			    (peek = TryPopCardFromPile(ref cards.Pile1, hardMode)) != null)
+				(peek = TryPopCardFromPile(ref cards.Pile1, hardMode)) != null)
 			{
 				card = peek;
 			}
 			else if (cards.Pile2.Length > 1 && (peek = cards.Pile2.Reverse().ElementAtOrDefault(1)) != null && suitsOnTop.Contains(peek.Suit) &&
-			         (peek = TryPopCardFromPile(ref cards.Pile2, hardMode)) != null)
+					 (peek = TryPopCardFromPile(ref cards.Pile2, hardMode)) != null)
 			{
 				card = peek;
 			}
 			else if (cards.Pile3.Length > 1 && (peek = cards.Pile3.Reverse().ElementAtOrDefault(1)) != null && suitsOnTop.Contains(peek.Suit) &&
-			         (peek = TryPopCardFromPile(ref cards.Pile3, hardMode)) != null)
+					 (peek = TryPopCardFromPile(ref cards.Pile3, hardMode)) != null)
 			{
 				card = peek;
 			}
 			else if (cards.Pile4.Length > 1 && (peek = cards.Pile4.Reverse().ElementAtOrDefault(1)) != null && suitsOnTop.Contains(peek.Suit) &&
-			         (peek = TryPopCardFromPile(ref cards.Pile4, hardMode)) != null)
+					 (peek = TryPopCardFromPile(ref cards.Pile4, hardMode)) != null)
 			{
 				card = peek;
 			}
@@ -345,7 +345,7 @@ namespace ProbabilityAnalyser.Core.Program
 				if (count >= 2)
 				{
 					var remainingCard = group.AllButHighestCardOfSuit(suit, aceRankHigh: true);
-					
+
 					var removed = group.Count(c =>
 					{
 						if (c.Suit != suit)
@@ -403,7 +403,7 @@ namespace ProbabilityAnalyser.Core.Program
 			public PlayingCardDeck Deck { get; }
 			public AcesUpFaceUpCards FaceUpCards { get; } = new AcesUpFaceUpCards();
 			public CancellationToken Token { get; }
-			public bool HardMode { get; set;  }
+			public bool HardMode { get; set; }
 
 			public Func<AcesUpRunContext, bool> MovingStrategy;
 		}
@@ -474,13 +474,13 @@ namespace ProbabilityAnalyser.Core.Program
 			public void AppendCardToPile(PlayingCard card, int pile)
 			{
 				if (pile == 1)
-					Pile1 = Pile1.Concat(new[] {card}).ToArray();
+					Pile1 = Pile1.Concat(new[] { card }).ToArray();
 				else if (pile == 2)
-					Pile2 = Pile2.Concat(new[] {card}).ToArray();
+					Pile2 = Pile2.Concat(new[] { card }).ToArray();
 				else if (pile == 3)
-					Pile3 = Pile3.Concat(new[] {card}).ToArray();
+					Pile3 = Pile3.Concat(new[] { card }).ToArray();
 				else if (pile == 4)
-					Pile4 = Pile4.Concat(new[] {card}).ToArray();
+					Pile4 = Pile4.Concat(new[] { card }).ToArray();
 				else
 				{
 
