@@ -471,5 +471,65 @@ namespace ProbabilityAnalyser.Core.Program
 			}
 		}
 
+		public class AcesToEmptyPiles : ICardMovingStrategy
+		{
+			private readonly ICardMovingStrategy _fallback;
+
+			public AcesToEmptyPiles(ICardMovingStrategy fallback = null)
+			{
+				_fallback = fallback;
+			}
+
+			public virtual bool MoveCard(AcesUpRunContext context)
+			{
+				var top = context.FaceUpCards.Top().ToArray();
+				if (top.Length >= 4)
+					return false;       // has no empty piles...
+
+				bool moved;
+				PlayingCard peek;
+				PlayingCard card;
+				var hardMode = context.HardMode;
+				var cards = context.FaceUpCards;
+
+				// Get card...;
+				if (cards.Pile1.Length > 1 && (peek = cards.Pile1.Last()) != null && peek.Rank == PlayingCardRank.Ace &&
+				    (peek = TryPopCardFromPile(ref cards.Pile1, hardMode)) != null)
+				{
+					card = peek;
+				}
+				else if (cards.Pile2.Length > 1 && (peek = cards.Pile2.Last()) != null && peek.Rank == PlayingCardRank.Ace &&
+				         (peek = TryPopCardFromPile(ref cards.Pile1, hardMode)) != null)
+				{
+					card = peek;
+				}
+				else if (cards.Pile3.Length > 1 && (peek = cards.Pile3.Last()) != null && peek.Rank == PlayingCardRank.Ace &&
+				         (peek = TryPopCardFromPile(ref cards.Pile1, hardMode)) != null)
+				{
+					card = peek;
+				}
+				else if (cards.Pile4.Length > 1 && (peek = cards.Pile4.Last()) != null && peek.Rank == PlayingCardRank.Ace &&
+				         (peek = TryPopCardFromPile(ref cards.Pile1, hardMode)) != null)
+				{
+					card = peek;
+				}
+				else
+				{
+					// no piles have any cards available to move...
+
+					moved = false;
+					if (_fallback != null)
+						moved = _fallback.MoveCard(context);
+					return moved;
+				}
+
+				// Move card...
+				context.FaceUpCards.AppendOneToEmptyPile(card);
+				moved = true;
+
+				return moved;
+			}
+		}
+
 	}
 }
