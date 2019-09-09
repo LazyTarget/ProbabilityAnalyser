@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -69,7 +70,11 @@ namespace ProbabilityAnalyser.UnitTests
 			var context = new AcesUp.AcesUpRunContext(deck, CancellationToken.None);
 			configure?.Invoke(context);
 
-			var program = new AcesUp(Console.Out, s => $"[{instanceId:D5}] :: {s}");
+			TextWriter output = null;
+
+			//output = Console.Out;
+
+			var program = new AcesUp(output, s => $"[{instanceId:D5}] :: {s}");
 
 			var points = program.Run(context);
 
