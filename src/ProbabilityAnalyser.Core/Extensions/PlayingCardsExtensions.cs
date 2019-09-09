@@ -18,38 +18,46 @@ namespace ProbabilityAnalyser.Core.Extensions
 			}
 			else
 			{
+				string s = "";
 				switch (card.Suit)
 				{
 					case PlayingCardSuit.Joker:
-						str += "J";
+						s += "J";
 						break;
 					default:
-						str += card.Suit.ToFriendlyString();
+						s += card.Suit.ToFriendlyString();
 						break;
 				}
 
+				string r = "";
 				switch (card.Rank)
 				{
 					case PlayingCardRank.Jack:
-						str += "J";
+						r += "J";
 						break;
 					case PlayingCardRank.Queen:
-						str += "Q";
+						r += "Q";
 						break;
 					case PlayingCardRank.King:
-						str += "K";
+						r += "K";
 						break;
 					case PlayingCardRank.Ace:
-						str += "A";
+						r += "A";
 						break;
 					case PlayingCardRank.Joker:
-						str += "J";
+						r += "J";
 						break;
+
 					default:
-						var val = (int) card.Rank;
-						str += val.ToString();
+						var val = ((int) card.Rank).ToString();
+						r += val;
 						break;
 				}
+
+				while (r.Length < 2)
+					r += " ";
+
+				str = $"{s}{r}";
 			}
 			return str;
 		}

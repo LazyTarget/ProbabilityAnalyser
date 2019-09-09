@@ -46,7 +46,7 @@ namespace ProbabilityAnalyser.Core.Program
 				gameover = !DealAndCheck(context);
 				loops++;
 
-				PrintContext(context);
+				PrintContext(context, "loop");
 			}
 
 
@@ -79,7 +79,7 @@ namespace ProbabilityAnalyser.Core.Program
 			return points;
 		}
 
-		private void PrintContext(AcesUpRunContext context)
+		private void PrintContext(AcesUpRunContext context, string extra)
 		{
 			if (!System.Diagnostics.Debugger.IsAttached)
 				return;
@@ -91,26 +91,28 @@ namespace ProbabilityAnalyser.Core.Program
 			if (card != null)
 				str += $"{card?.ToShortString()} ";
 			else
-				str += $"   ";
+				str += $"    ";
 
 			card = context.FaceUpCards.Pile2.LastOrDefault();
 			if (card != null)
 				str += $"{card?.ToShortString()} ";
 			else
-				str += $"   ";
+				str += $"    ";
 
 			card = context.FaceUpCards.Pile3.LastOrDefault();
 			if (card != null)
 				str += $"{card?.ToShortString()} ";
 			else
-				str += $"   ";
+				str += $"    ";
 
 			card = context.FaceUpCards.Pile4.LastOrDefault();
 			if (card != null)
 				str += $"{card?.ToShortString()} ";
 			else
-				str += $"   ";
+				str += $"    ";
 
+
+			str += $"  ({extra})";
 			Console.WriteLine(str);
 		}
 
@@ -170,8 +172,7 @@ namespace ProbabilityAnalyser.Core.Program
 
 			if (discarded)
 			{
-				Console.WriteLine("::Discarded::");
-				PrintContext(context);
+				PrintContext(context, "discarded");
 
 				// Continue to check for cards to discard...
 				var r = CheckAndDiscardSuits(context);
@@ -189,28 +190,24 @@ namespace ProbabilityAnalyser.Core.Program
 				movingStrategy = MoveFirstAvailableCardToEmptySpace;
 			}
 
-			//bool moved;
-			//bool changed = false;
-			//do
-			//{
-			//	moved = movingStrategy(context);
-			//	if (moved)
-			//		changed = true;
-
-			//} while (moved);
-
-
-			var changed = movingStrategy(context);
-			if (changed)
+			bool moved;
+			bool changed = false;
+			do
 			{
-				Console.WriteLine("::Moved::");
-				PrintContext(context);
+				moved = movingStrategy(context);
+				if (moved)
+				{
+					changed = true;
+					PrintContext(context, "moved");
+				}
+
 
 				if (context.FaceUpCards.Top().Count() < 4)
 				{
 					// todo: should move again... ?
 				}
-			}
+
+			} while (moved);
 
 			return changed;
 		}
@@ -362,8 +359,7 @@ namespace ProbabilityAnalyser.Core.Program
 			context.FaceUpCards.AppendCardsToPiles(cards);
 
 
-			Console.WriteLine("::Deal4::");
-			PrintContext(context);
+			PrintContext(context, "deal");
 
 			return cards.Length > 0;
 		}
