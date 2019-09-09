@@ -184,17 +184,17 @@ namespace ProbabilityAnalyser.Core.Program
 				return false;
 			}
 
-			Func<AcesUpRunContext, bool> movingStrategy = context.MovingStrategy;
+			ICardMovingStrategy movingStrategy = context.MovingStrategy;
 			if (movingStrategy == null)
 			{
-				movingStrategy = MoveFirstAvailableCardToEmptySpace;
+				throw new NullReferenceException($"Invalid moving strategy!");
 			}
 
 			bool moved;
 			bool changed = false;
 			do
 			{
-				moved = movingStrategy(context);
+				moved = movingStrategy.MoveCard(context);
 				if (moved)
 				{
 					changed = true;
@@ -206,92 +206,6 @@ namespace ProbabilityAnalyser.Core.Program
 			return changed;
 		}
 
-
-		public static bool MoveFirstAvailableCardToEmptySpace(AcesUpRunContext context)
-		{
-			PlayingCard peek;
-			PlayingCard card;
-			var hardMode = context.HardMode;
-			var cards = context.FaceUpCards;
-
-			// Get card...;
-			if (cards.Pile1.Length > 1 && (peek = TryPopCardFromPile(ref cards.Pile1, hardMode)) != null)
-			{
-				card = peek;
-			}
-			else if (cards.Pile2.Length > 1 && (peek = TryPopCardFromPile(ref cards.Pile2, hardMode)) != null)
-			{
-				card = peek;
-			}
-			else if (cards.Pile3.Length > 1 && (peek = TryPopCardFromPile(ref cards.Pile3, hardMode)) != null)
-			{
-				card = peek;
-			}
-			else if (cards.Pile4.Length > 1 && (peek = TryPopCardFromPile(ref cards.Pile4, hardMode)) != null)
-			{
-				card = peek;
-			}
-			else
-				return false;       // no piles have any cards available to move...
-
-			// Move card...
-			context.FaceUpCards.AppendOneToEmptyPile(card);
-
-			return true;
-		}
-
-		public static bool MoveCardBasedOnCardsUnderTop(AcesUpRunContext context)
-		{
-			// todo: Implement "AI" which remembers the card under the Top card(s), for better 'moving-strategy'
-
-			var top = context.FaceUpCards.Top().ToArray();
-			if (top.Length >= 4)
-				return false;       // no change
-
-			var suitsOnTop = top.Select(c => c.Suit).Distinct().ToArray();
-
-			PlayingCard card;
-			PlayingCard peek;
-			var hardMode = context.HardMode;
-			var cards = context.FaceUpCards;
-
-			if (cards.Pile1.Length > 1 && (peek = cards.Pile1.Reverse().ElementAtOrDefault(1)) != null && suitsOnTop.Contains(peek.Suit) &&
-				(peek = TryPopCardFromPile(ref cards.Pile1, hardMode)) != null)
-			{
-				card = peek;
-			}
-			else if (cards.Pile2.Length > 1 && (peek = cards.Pile2.Reverse().ElementAtOrDefault(1)) != null && suitsOnTop.Contains(peek.Suit) &&
-					 (peek = TryPopCardFromPile(ref cards.Pile2, hardMode)) != null)
-			{
-				card = peek;
-			}
-			else if (cards.Pile3.Length > 1 && (peek = cards.Pile3.Reverse().ElementAtOrDefault(1)) != null && suitsOnTop.Contains(peek.Suit) &&
-					 (peek = TryPopCardFromPile(ref cards.Pile3, hardMode)) != null)
-			{
-				card = peek;
-			}
-			else if (cards.Pile4.Length > 1 && (peek = cards.Pile4.Reverse().ElementAtOrDefault(1)) != null && suitsOnTop.Contains(peek.Suit) &&
-					 (peek = TryPopCardFromPile(ref cards.Pile4, hardMode)) != null)
-			{
-				card = peek;
-			}
-			else
-			{
-				// Fallback to "dumber" strategy
-				var moved = MoveFirstAvailableCardToEmptySpace(context);
-				if (moved)
-				{
-
-				}
-				return moved;
-			}
-
-
-			// Move card...
-			context.FaceUpCards.AppendOneToEmptyPile(card);
-
-			return true;
-		}
 
 
 		// Utils
@@ -330,6 +244,10 @@ namespace ProbabilityAnalyser.Core.Program
 				Deck = deck;
 				Token = cancellationToken;
 				HardMode = hardMode;
+				MovingStrategy =
+					new MoveCardBasedOnDirectlyUnderTopCard(
+						new MoveFirstAvailableCardToEmptySpace()
+					);
 			}
 
 			public PlayingCardDeck Deck { get; }
@@ -337,7 +255,7 @@ namespace ProbabilityAnalyser.Core.Program
 			public CancellationToken Token { get; }
 			public bool HardMode { get; set; }
 
-			public Func<AcesUpRunContext, bool> MovingStrategy;
+			public ICardMovingStrategy MovingStrategy;
 		}
 
 		public class AcesUpFaceUpCards
@@ -435,5 +353,123 @@ namespace ProbabilityAnalyser.Core.Program
 				}
 			}
 		}
+
+
+		public interface ICardMovingStrategy
+		{
+			bool MoveCard(AcesUpRunContext context);
+		}
+
+
+		public class MoveFirstAvailableCardToEmptySpace : ICardMovingStrategy
+		{
+			private readonly ICardMovingStrategy _fallback;
+
+			public MoveFirstAvailableCardToEmptySpace(ICardMovingStrategy fallback = null)
+			{
+				_fallback = fallback;
+			}
+
+			public virtual bool MoveCard(AcesUpRunContext context)
+			{
+				PlayingCard peek;
+				PlayingCard card;
+				var hardMode = context.HardMode;
+				var cards = context.FaceUpCards;
+
+				// Get card...;
+				if (cards.Pile1.Length > 1 && (peek = TryPopCardFromPile(ref cards.Pile1, hardMode)) != null)
+				{
+					card = peek;
+				}
+				else if (cards.Pile2.Length > 1 && (peek = TryPopCardFromPile(ref cards.Pile2, hardMode)) != null)
+				{
+					card = peek;
+				}
+				else if (cards.Pile3.Length > 1 && (peek = TryPopCardFromPile(ref cards.Pile3, hardMode)) != null)
+				{
+					card = peek;
+				}
+				else if (cards.Pile4.Length > 1 && (peek = TryPopCardFromPile(ref cards.Pile4, hardMode)) != null)
+				{
+					card = peek;
+				}
+				else
+				{
+					// no piles have any cards available to move...
+
+					var moved = false;
+					if (_fallback != null)
+						moved = _fallback.MoveCard(context);
+					return moved;
+				}
+
+				// Move card...
+				context.FaceUpCards.AppendOneToEmptyPile(card);
+
+				return true;
+			}
+		}
+
+		public class MoveCardBasedOnDirectlyUnderTopCard : ICardMovingStrategy
+		{
+			private readonly ICardMovingStrategy _fallback;
+
+			public MoveCardBasedOnDirectlyUnderTopCard(ICardMovingStrategy fallback = null)
+			{
+				_fallback = fallback;
+			}
+
+			public virtual bool MoveCard(AcesUpRunContext context)
+			{
+				// todo: Implement "AI" which remembers the card under the Top card(s), for better 'moving-strategy'
+
+				var top = context.FaceUpCards.Top().ToArray();
+				if (top.Length >= 4)
+					return false;       // no change
+
+				var suitsOnTop = top.Select(c => c.Suit).Distinct().ToArray();
+
+				PlayingCard card;
+				PlayingCard peek;
+				var hardMode = context.HardMode;
+				var cards = context.FaceUpCards;
+
+				if (cards.Pile1.Length > 1 && (peek = cards.Pile1.Reverse().ElementAtOrDefault(1)) != null && suitsOnTop.Contains(peek.Suit) &&
+					(peek = TryPopCardFromPile(ref cards.Pile1, hardMode)) != null)
+				{
+					card = peek;
+				}
+				else if (cards.Pile2.Length > 1 && (peek = cards.Pile2.Reverse().ElementAtOrDefault(1)) != null && suitsOnTop.Contains(peek.Suit) &&
+						 (peek = TryPopCardFromPile(ref cards.Pile2, hardMode)) != null)
+				{
+					card = peek;
+				}
+				else if (cards.Pile3.Length > 1 && (peek = cards.Pile3.Reverse().ElementAtOrDefault(1)) != null && suitsOnTop.Contains(peek.Suit) &&
+						 (peek = TryPopCardFromPile(ref cards.Pile3, hardMode)) != null)
+				{
+					card = peek;
+				}
+				else if (cards.Pile4.Length > 1 && (peek = cards.Pile4.Reverse().ElementAtOrDefault(1)) != null && suitsOnTop.Contains(peek.Suit) &&
+						 (peek = TryPopCardFromPile(ref cards.Pile4, hardMode)) != null)
+				{
+					card = peek;
+				}
+				else
+				{
+					var moved = false;
+					if (_fallback != null)
+						moved = _fallback.MoveCard(context);
+					return moved;
+				}
+
+
+				// Move card...
+				context.FaceUpCards.AppendOneToEmptyPile(card);
+
+				return true;
+			}
+		}
+
 	}
 }

@@ -90,7 +90,8 @@ namespace ProbabilityAnalyser.UnitTests
 			var wins = RunTest(
 				c =>
 				{
-					c.MovingStrategy = AcesUp.MoveFirstAvailableCardToEmptySpace;
+					c.MovingStrategy = new AcesUp.MoveFirstAvailableCardToEmptySpace();
+					c.HardMode = false;
 				}
 			);
 		}
@@ -102,7 +103,7 @@ namespace ProbabilityAnalyser.UnitTests
 			var wins = RunTest(
 				c =>
 				{
-					c.MovingStrategy = AcesUp.MoveFirstAvailableCardToEmptySpace;
+					c.MovingStrategy = new AcesUp.MoveFirstAvailableCardToEmptySpace();
 					c.HardMode = true;
 				}
 			);
@@ -111,12 +112,13 @@ namespace ProbabilityAnalyser.UnitTests
 
 
 		[TestMethod]
-		public void Strategy_MoveCardBasedOnCardsUnderTop()
+		public void Strategy_MoveCardBasedOnDirectlyUnderTopCard()
 		{
 			var wins = RunTest(
 				c =>
 				{
-					c.MovingStrategy = AcesUp.MoveCardBasedOnCardsUnderTop;
+					c.MovingStrategy = new AcesUp.MoveCardBasedOnDirectlyUnderTopCard();
+					c.HardMode = false;
 				}
 			);
 		}
@@ -124,12 +126,12 @@ namespace ProbabilityAnalyser.UnitTests
 
 
 		[TestMethod]
-		public void Strategy_MoveCardBasedOnCardsUnderTop_HardMode()
+		public void Strategy_MoveCardBasedOnDirectlyUnderTopCard_HardMode()
 		{
 			var wins = RunTest(
 				c =>
 				{
-					c.MovingStrategy = AcesUp.MoveCardBasedOnCardsUnderTop;
+					c.MovingStrategy = new AcesUp.MoveCardBasedOnDirectlyUnderTopCard();
 					c.HardMode = true;
 				}
 			);
