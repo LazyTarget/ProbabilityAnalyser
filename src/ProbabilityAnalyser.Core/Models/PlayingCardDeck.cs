@@ -10,7 +10,6 @@ namespace ProbabilityAnalyser.Core.Models
 	{
 		#region Static
 
-		private static readonly Random _random = new Random();
 		private static readonly List<PlayingCard> _standard52CardDeck;
 
 
@@ -63,7 +62,7 @@ namespace ProbabilityAnalyser.Core.Models
 
 		public void Shuffle()
 		{
-			var shuffled = Cards.OrderBy(c => _random.Next()).ToArray();
+			var shuffled = Cards.OrderBy(c => Internal.Random.Next()).ToArray();
 			Cards = shuffled;
 		}
 

@@ -17,6 +17,35 @@ namespace ProbabilityAnalyser.UnitTests
 		}
 
 		public static int NR_OF_INSTANCES = 10000;
+		public static bool PARALLEL_INSTANCES = false;
+
+
+
+		protected virtual int RunTest(Action<AcesUp.AcesUpRunContext> configure = null)
+		{
+			var wins = RunTest(configure, NR_OF_INSTANCES, PARALLEL_INSTANCES);
+			return wins;
+		}
+
+		protected virtual int RunTest(Action<AcesUp.AcesUpRunContext> configure, int instances, bool parallel)
+		{
+			double wins = 0;
+			Parallel.For(0, instances, (i, s) =>
+			{
+				var pts = RunInstance(configure);
+				if (pts > 48)
+				{
+					wins++;
+				}
+				else if (pts == 48)
+				{
+					// Final 4 cards are not Aces
+				}
+			});
+
+			Console.WriteLine($"{wins} wins out of {instances} == {(wins / instances):P4}");
+			return (int)wins;
+		}
 
 
 		protected virtual int RunInstance(Action<AcesUp.AcesUpRunContext> configure = null)
@@ -36,67 +65,42 @@ namespace ProbabilityAnalyser.UnitTests
 		}
 
 
+
 		[TestMethod]
 		public void Strategy_MoveFirstAvailableCardToEmptySpace()
 		{
-			double wins = 0;
-			Parallel.For(0, NR_OF_INSTANCES, (i, s) =>
-			{
-				var pts = RunInstance(c =>
+			var wins = RunTest(
+				c =>
 				{
 					c.MovingStrategy = AcesUp.MoveFirstAvailableCardToEmptySpace;
-				});
-				if (pts > 48)
-				{
-					wins++;
 				}
-				//Console.WriteLine($"{pts} points");
-			});
-
-			Console.WriteLine($"{wins} wins out of {NR_OF_INSTANCES} == {(wins/NR_OF_INSTANCES):P4}");
+			);
 		}
 
 
 		[TestMethod]
 		public void Strategy_MoveFirstAvailableCardToEmptySpace_Hard()
 		{
-			double wins = 0;
-			Parallel.For(0, NR_OF_INSTANCES, (i, s) =>
-			{
-				var pts = RunInstance(c =>
+			var wins = RunTest(
+				c =>
 				{
 					c.MovingStrategy = AcesUp.MoveFirstAvailableCardToEmptySpace;
 					c.HardMode = true;
-				});
-				if (pts > 48)
-				{
-					wins++;
 				}
-				//Console.WriteLine($"{pts} points");
-			});
-
-			Console.WriteLine($"{wins} wins out of {NR_OF_INSTANCES} == {(wins / NR_OF_INSTANCES):P4}");
+			);
 		}
+
 
 
 		[TestMethod]
 		public void Strategy_MoveCardBasedOnCardsUnderTop()
 		{
-			double wins = 0;
-			Parallel.For(0, NR_OF_INSTANCES, (i, s) =>
-			{
-				var pts = RunInstance(c =>
+			var wins = RunTest(
+				c =>
 				{
 					c.MovingStrategy = AcesUp.MoveCardBasedOnCardsUnderTop;
-				});
-				if (pts > 48)
-				{
-					wins++;
 				}
-				//Console.WriteLine($"{pts} points");
-			});
-
-			Console.WriteLine($"{wins} wins out of {NR_OF_INSTANCES} == {(wins / NR_OF_INSTANCES):P4}");
+			);
 		}
 
 
@@ -104,22 +108,13 @@ namespace ProbabilityAnalyser.UnitTests
 		[TestMethod]
 		public void Strategy_MoveCardBasedOnCardsUnderTop_HardMode()
 		{
-			double wins = 0;
-			Parallel.For(0, NR_OF_INSTANCES, (i, s) =>
-			{
-				var pts = RunInstance(c =>
+			var wins = RunTest(
+				c =>
 				{
 					c.MovingStrategy = AcesUp.MoveCardBasedOnCardsUnderTop;
 					c.HardMode = true;
-				});
-				if (pts > 48)
-				{
-					wins++;
 				}
-				//Console.WriteLine($"{pts} points");
-			});
-
-			Console.WriteLine($"{wins} wins out of {NR_OF_INSTANCES} == {(wins / NR_OF_INSTANCES):P4}");
+			);
 		}
 
 	}
