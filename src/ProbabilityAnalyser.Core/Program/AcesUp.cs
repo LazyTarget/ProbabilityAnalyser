@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -10,6 +11,15 @@ namespace ProbabilityAnalyser.Core.Program
 {
 	public class AcesUp
 	{
+		private readonly TextWriter _output;
+		private readonly Func<string, string> _logFormatter;
+
+		public AcesUp(TextWriter output, Func<string, string> logFormatter = null)
+		{
+			_output = output;
+			_logFormatter = logFormatter;
+		}
+
 		public int Run(PlayingCardDeck deck)
 		{
 			var result = Run(deck, CancellationToken.None);
@@ -81,7 +91,10 @@ namespace ProbabilityAnalyser.Core.Program
 
 		private void PrintContext(AcesUpRunContext context, string extra)
 		{
-			if (!System.Diagnostics.Debugger.IsAttached)
+			//if (!System.Diagnostics.Debugger.IsAttached)
+			//	return;
+
+			if (_output == null)
 				return;
 
 			var str = "";
@@ -113,7 +126,10 @@ namespace ProbabilityAnalyser.Core.Program
 
 
 			str += $"  ({extra})";
-			Console.WriteLine(str);
+
+			if (_logFormatter != null)
+				str = _logFormatter.Invoke(str);
+			_output.WriteLine(str);
 		}
 
 
