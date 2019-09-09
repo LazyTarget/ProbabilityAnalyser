@@ -171,6 +171,52 @@ namespace ProbabilityAnalyser.UnitTests
 
 
 		[TestMethod]
+		public void Strategy_AcesToEmptyPiles_when_hard_mode()
+		{
+			var wins = RunTest(
+				c =>
+				{
+					c.MovingStrategy = new AcesUp.AcesToEmptyPiles();
+					c.HardMode = true;
+				}
+			);
+		}
+
+
+
+		[TestMethod]
+		public void Strategy_AcesToEmptyPiles_to_MoveFirstAvailableCardToEmptySpace()
+		{
+			var wins = RunTest(
+				c =>
+				{
+					c.MovingStrategy = new AcesUp.AcesToEmptyPiles(
+						new AcesUp.MoveFirstAvailableCardToEmptySpace()
+					);
+					c.HardMode = false;
+				}
+			);
+		}
+
+
+
+		[TestMethod]
+		public void Strategy_AcesToEmptyPiles_to_MoveFirstAvailableCardToEmptySpace_when_hard_mode()
+		{
+			var wins = RunTest(
+				c =>
+				{
+					c.MovingStrategy = new AcesUp.AcesToEmptyPiles(
+						new AcesUp.MoveFirstAvailableCardToEmptySpace()
+					);
+					c.HardMode = true;
+				}
+			);
+		}
+
+
+
+		[TestMethod]
 		public void Strategy_AcesToEmptyPiles_to_MoveCardBasedOnDirectlyUnderTopCard_to_MoveFirstAvailableCardToEmptySpace()
 		{
 			var wins = RunTest(
