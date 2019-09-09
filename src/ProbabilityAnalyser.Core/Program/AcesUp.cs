@@ -107,7 +107,11 @@ namespace ProbabilityAnalyser.Core.Program
 
 			if (_logFormatter != null)
 				str = _logFormatter.Invoke(str);
+
 			_output?.WriteLine(str);
+
+			if (System.Diagnostics.Debugger.IsAttached)
+				System.Diagnostics.Trace.WriteLine(str);
 		}
 
 

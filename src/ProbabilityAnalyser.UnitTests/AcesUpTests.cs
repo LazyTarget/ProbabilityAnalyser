@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,7 +33,9 @@ namespace ProbabilityAnalyser.UnitTests
 		{
 			TextWriter output = null;
 			if (instances <= 1)
+			{
 				output = Console.Out;
+			}
 
 			double wins = 0;
 			Action<int, ParallelLoopState> action = (i, s) =>
@@ -79,7 +82,12 @@ namespace ProbabilityAnalyser.UnitTests
 			var context = new AcesUp.AcesUpRunContext(deck, CancellationToken.None);
 			configure?.Invoke(context);
 
-			var program = new AcesUp(output, s => $"[{instanceId:D5}] :: {s}");
+			var program = new AcesUp(output, s =>
+			{
+				if (instanceId > 1)
+					return $"[{instanceId:D5}] :: {s}";
+				return s;
+			});
 
 			var points = program.Run(context);
 
