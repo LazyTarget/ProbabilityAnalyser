@@ -184,6 +184,12 @@ namespace ProbabilityAnalyser.Core.Program
 
 		private bool MoveCardsIfHasEmptySpaces(AcesUpRunContext context)
 		{
+			if (context.FaceUpCards.Top().Count() >= 4)
+			{
+				// No empty pile to move to...
+				return false;
+			}
+
 			Func<AcesUpRunContext, bool> movingStrategy = context.MovingStrategy;
 			if (movingStrategy == null)
 			{
@@ -201,13 +207,7 @@ namespace ProbabilityAnalyser.Core.Program
 					PrintContext(context, "moved");
 				}
 
-
-				if (context.FaceUpCards.Top().Count() < 4)
-				{
-					// todo: should move again... ?
-				}
-
-			} while (moved);
+			} while (moved && context.FaceUpCards.Top().Count() < 4);
 
 			return changed;
 		}
