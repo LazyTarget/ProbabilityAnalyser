@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -193,7 +193,49 @@ namespace ProbabilityAnalyser.Core.Program
 		{
 			// todo: Implement "AI" which remembers the card under the Top card(s), for better 'moving-strategy'
 
-			throw new NotImplementedException();
+			var top = context.FaceUpCards.Top().ToArray();
+			if (top.Length >= 4)
+				return false;		// no change
+
+			var suitsOnTop = top.Select(c => c.Suit).Distinct().ToArray();
+
+			PlayingCard card;
+			PlayingCard peek;
+			var hardMode = context.HardMode;
+			var cards = context.FaceUpCards;
+
+			if (cards.Pile1.Length > 1 && (peek = cards.Pile1.Reverse().ElementAtOrDefault(1)) != null && suitsOnTop.Contains(peek.Suit) &&
+			    (peek = TryPopCardFromPile(ref cards.Pile1, hardMode)) != null)
+			{
+				card = peek;
+			}
+			else if (cards.Pile2.Length > 1 && (peek = cards.Pile2.Reverse().ElementAtOrDefault(1)) != null && suitsOnTop.Contains(peek.Suit) &&
+			         (peek = TryPopCardFromPile(ref cards.Pile2, hardMode)) != null)
+			{
+				card = peek;
+			}
+			else if (cards.Pile3.Length > 1 && (peek = cards.Pile3.Reverse().ElementAtOrDefault(1)) != null && suitsOnTop.Contains(peek.Suit) &&
+			         (peek = TryPopCardFromPile(ref cards.Pile3, hardMode)) != null)
+			{
+				card = peek;
+			}
+			else if (cards.Pile4.Length > 1 && (peek = cards.Pile4.Reverse().ElementAtOrDefault(1)) != null && suitsOnTop.Contains(peek.Suit) &&
+			         (peek = TryPopCardFromPile(ref cards.Pile4, hardMode)) != null)
+			{
+				card = peek;
+			}
+			else
+			{
+				// Fallback to "dumber" strategy
+				var moved = MoveFirstAvailableCardToEmptySpace(context);
+				return moved;
+			}
+
+
+			// Move card...
+			context.FaceUpCards.AppendOneToEmptyPile(card);
+
+			return true;
 		}
 
 
