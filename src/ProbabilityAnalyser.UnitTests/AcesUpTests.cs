@@ -34,7 +34,11 @@ namespace ProbabilityAnalyser.UnitTests
 
 			Action<int, ParallelLoopState> action = (i, s) =>
 			{
-				var pts = RunInstance(configure, i);
+				TextWriter output = null;
+				if (instances <= 1)
+					output = Console.Out;
+
+				var pts = RunInstance(configure, output, i);
 				if (pts > 48)
 				{
 					wins++;
@@ -62,17 +66,13 @@ namespace ProbabilityAnalyser.UnitTests
 		}
 
 
-		protected virtual int RunInstance(Action<AcesUp.AcesUpRunContext> configure, int instanceId)
+		protected virtual int RunInstance(Action<AcesUp.AcesUpRunContext> configure, TextWriter output, int instanceId)
 		{
 			var deck = PlayingCardDeck.Standard52CardDeck();
 			deck.Shuffle();
 
 			var context = new AcesUp.AcesUpRunContext(deck, CancellationToken.None);
 			configure?.Invoke(context);
-
-			TextWriter output = null;
-
-			//output = Console.Out;
 
 			var program = new AcesUp(output, s => $"[{instanceId:D5}] :: {s}");
 
