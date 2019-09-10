@@ -1,6 +1,6 @@
 ﻿using System;
 using ProbabilityAnalyser.Core.Models;
-using ProbabilityAnalyser.Core.Program;
+using ProbabilityAnalyser.Core.Program.AcesUp;
 
 namespace ProbabilityAnalyser.ConsoleApp
 {

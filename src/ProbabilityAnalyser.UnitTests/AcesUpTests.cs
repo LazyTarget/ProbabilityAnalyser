@@ -5,7 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProbabilityAnalyser.Core.Models;
-using ProbabilityAnalyser.Core.Program;
+using ProbabilityAnalyser.Core.Program.AcesUp;
+using ProbabilityAnalyser.Core.Program.AcesUp.Strategy;
 
 namespace ProbabilityAnalyser.UnitTests
 {
@@ -23,13 +24,13 @@ namespace ProbabilityAnalyser.UnitTests
 
 
 
-		protected virtual int RunTest(Action<AcesUp.AcesUpRunContext> configure = null)
+		protected virtual int RunTest(Action<AcesUpRunContext> configure = null)
 		{
 			var wins = RunTest(configure, NR_OF_INSTANCES, PARALLEL_INSTANCES);
 			return wins;
 		}
 
-		protected virtual int RunTest(Action<AcesUp.AcesUpRunContext> configure, int instances, bool parallel)
+		protected virtual int RunTest(Action<AcesUpRunContext> configure, int instances, bool parallel)
 		{
 			TextWriter output = null;
 			if (instances <= 1)
@@ -74,12 +75,12 @@ namespace ProbabilityAnalyser.UnitTests
 		}
 
 
-		protected virtual int RunInstance(Action<AcesUp.AcesUpRunContext> configure, TextWriter output, int instanceId)
+		protected virtual int RunInstance(Action<AcesUpRunContext> configure, TextWriter output, int instanceId)
 		{
 			var deck = PlayingCardDeck.Standard52CardDeck();
 			deck.Shuffle();
 
-			var context = new AcesUp.AcesUpRunContext(deck, CancellationToken.None);
+			var context = new AcesUpRunContext(deck, CancellationToken.None);
 			configure?.Invoke(context);
 
 			var program = new AcesUp(output, s =>
@@ -103,7 +104,7 @@ namespace ProbabilityAnalyser.UnitTests
 			var wins = RunTest(
 				c =>
 				{
-					c.MovingStrategy = new AcesUp.MoveFirstAvailableCardToEmptySpace();
+					c.MovingStrategy = new MoveFirstAvailableCardToEmptySpace();
 					c.HardMode = false;
 				}
 			);
@@ -116,7 +117,7 @@ namespace ProbabilityAnalyser.UnitTests
 			var wins = RunTest(
 				c =>
 				{
-					c.MovingStrategy = new AcesUp.MoveFirstAvailableCardToEmptySpace();
+					c.MovingStrategy = new MoveFirstAvailableCardToEmptySpace();
 					c.HardMode = true;
 				}
 			);
@@ -130,8 +131,8 @@ namespace ProbabilityAnalyser.UnitTests
 			var wins = RunTest(
 				c =>
 				{
-					c.MovingStrategy = new AcesUp.MoveCardBasedOnDirectlyUnderTopCard(
-						new AcesUp.MoveFirstAvailableCardToEmptySpace()
+					c.MovingStrategy = new MoveCardBasedOnDirectlyUnderTopCard(
+						new MoveFirstAvailableCardToEmptySpace()
 					);
 					c.HardMode = false;
 				}
@@ -146,8 +147,8 @@ namespace ProbabilityAnalyser.UnitTests
 			var wins = RunTest(
 				c =>
 				{
-					c.MovingStrategy = new AcesUp.MoveCardBasedOnDirectlyUnderTopCard(
-						new AcesUp.MoveFirstAvailableCardToEmptySpace()
+					c.MovingStrategy = new MoveCardBasedOnDirectlyUnderTopCard(
+						new MoveFirstAvailableCardToEmptySpace()
 					);
 					c.HardMode = true;
 				}
@@ -162,7 +163,7 @@ namespace ProbabilityAnalyser.UnitTests
 			var wins = RunTest(
 				c =>
 				{
-					c.MovingStrategy = new AcesUp.AcesToEmptyPiles();
+					c.MovingStrategy = new AcesToEmptyPiles();
 					c.HardMode = false;
 				}
 			);
@@ -176,7 +177,7 @@ namespace ProbabilityAnalyser.UnitTests
 			var wins = RunTest(
 				c =>
 				{
-					c.MovingStrategy = new AcesUp.AcesToEmptyPiles();
+					c.MovingStrategy = new AcesToEmptyPiles();
 					c.HardMode = true;
 				}
 			);
@@ -190,8 +191,8 @@ namespace ProbabilityAnalyser.UnitTests
 			var wins = RunTest(
 				c =>
 				{
-					c.MovingStrategy = new AcesUp.AcesToEmptyPiles(
-						new AcesUp.MoveFirstAvailableCardToEmptySpace()
+					c.MovingStrategy = new AcesToEmptyPiles(
+						new MoveFirstAvailableCardToEmptySpace()
 					);
 					c.HardMode = false;
 				}
@@ -206,8 +207,8 @@ namespace ProbabilityAnalyser.UnitTests
 			var wins = RunTest(
 				c =>
 				{
-					c.MovingStrategy = new AcesUp.AcesToEmptyPiles(
-						new AcesUp.MoveFirstAvailableCardToEmptySpace()
+					c.MovingStrategy = new AcesToEmptyPiles(
+						new MoveFirstAvailableCardToEmptySpace()
 					);
 					c.HardMode = true;
 				}
@@ -222,9 +223,9 @@ namespace ProbabilityAnalyser.UnitTests
 			var wins = RunTest(
 				c =>
 				{
-					c.MovingStrategy = new AcesUp.AcesToEmptyPiles(
-						new AcesUp.MoveCardBasedOnDirectlyUnderTopCard(
-							new AcesUp.MoveFirstAvailableCardToEmptySpace()
+					c.MovingStrategy = new AcesToEmptyPiles(
+						new MoveCardBasedOnDirectlyUnderTopCard(
+							new MoveFirstAvailableCardToEmptySpace()
 						)
 					);
 					c.HardMode = false;
@@ -240,9 +241,26 @@ namespace ProbabilityAnalyser.UnitTests
 			var wins = RunTest(
 				c =>
 				{
-					c.MovingStrategy = new AcesUp.AcesToEmptyPiles(
-						new AcesUp.MoveCardBasedOnDirectlyUnderTopCard(
-							new AcesUp.MoveFirstAvailableCardToEmptySpace()
+					c.MovingStrategy = new AcesToEmptyPiles(
+						new MoveCardBasedOnDirectlyUnderTopCard(
+							new MoveFirstAvailableCardToEmptySpace()
+						)
+					);
+					c.HardMode = true;
+				}
+			);
+		}
+
+
+		[TestMethod]
+		public void Strategy_MoveCardBasedOnDirectlyUnderTopCard_to_AcesToEmptyPiles_to_MoveFirstAvailableCardToEmptySpace_when_hard_mode()
+		{
+			var wins = RunTest(
+				c =>
+				{
+					c.MovingStrategy = new MoveCardBasedOnDirectlyUnderTopCard(
+						new AcesToEmptyPiles(
+							new MoveFirstAvailableCardToEmptySpace()
 						)
 					);
 					c.HardMode = true;
