@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using ProbabilityAnalyser.Core.Models;
+using ProbabilityAnalyser.Core.Program.AcesUp.Prioritizer;
 using ProbabilityAnalyser.Core.Program.AcesUp.Strategy;
 
 namespace ProbabilityAnalyser.Core.Program.AcesUp
@@ -16,6 +17,7 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 					new MoveFirstAvailableCardToEmptySpace()
 				);
 			FaceUpCards = new AcesUpFaceUpCards(this);
+			Prioritizer = new DefaultPilePrioritizer();
 		}
 
 		public PlayingCardDeck Deck { get; }
@@ -24,5 +26,6 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 		public bool HardMode { get; set; }
 
 		public ICardMovingStrategy MovingStrategy;
+		public IPilePrioritizer Prioritizer;
 	}
 }

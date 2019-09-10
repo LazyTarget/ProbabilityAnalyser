@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using ProbabilityAnalyser.Core.Extensions;
 using ProbabilityAnalyser.Core.Models;
+using ProbabilityAnalyser.Core.Program.AcesUp.Prioritizer;
 
-namespace ProbabilityAnalyser.Core.Program.AcesUp
+namespace ProbabilityAnalyser.Core.Program.AcesUp.Strategy
 {
 	public abstract class CardMovingStrategyBase : ICardMovingStrategy
 	{
@@ -18,10 +19,9 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 
 		protected virtual IEnumerable<AcesUpPile> Prioritize(AcesUpRunContext context)
 		{
-			yield return context.FaceUpCards.Pile1;
-			yield return context.FaceUpCards.Pile2;
-			yield return context.FaceUpCards.Pile3;
-			yield return context.FaceUpCards.Pile4;
+			var prioritizer = context.Prioritizer ?? new DefaultPilePrioritizer();
+			var priority = prioritizer.Prioritize(context);
+			return priority;
 		}
 
 		protected abstract bool Peek(AcesUpPile pile);
@@ -42,7 +42,7 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 				return false;       // has no empty piles...
 
 			if (context.FaceUpCards.Length <= 4)
-				return false;		// has no pile with more than 1 card
+				return false;       // has no pile with more than 1 card
 
 
 			PlayingCard card = null;
@@ -51,7 +51,7 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 			foreach (var pile in priority)
 			{
 				if (pile.Length < 2)
-					continue;		// pile is to small to move cards from
+					continue;       // pile is to small to move cards from
 
 				if (context.HardMode)
 				{
