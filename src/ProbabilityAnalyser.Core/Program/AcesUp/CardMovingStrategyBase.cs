@@ -26,7 +26,7 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 
 		protected abstract bool Peek(AcesUpPile pile);
 
-		protected virtual PlayingCard Pop(ref AcesUpPile pile)
+		protected virtual PlayingCard Pop(AcesUpPile pile)
 		{
 			PlayingCard card;
 			pile.PopTopCard(out card);
@@ -45,12 +45,7 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 				return false;		// has no pile with more than 1 card
 
 
-
-			bool moved;
 			PlayingCard card = null;
-			var hardMode = context.HardMode;
-			var cards = context.FaceUpCards;
-
 
 			var priority = Prioritize(context);
 			foreach (var pile in priority)
@@ -58,7 +53,7 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 				if (pile.Length < 2)
 					continue;		// pile is to small to move cards from
 
-				if (hardMode)
+				if (context.HardMode)
 				{
 					if (pile.Last().Rank != PlayingCardRank.Ace)
 					{
@@ -67,22 +62,18 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 					}
 				}
 
+
 				if (Peek(pile))
 				{
-					if (pile == cards.Pile1)
-						card = Pop(ref context.FaceUpCards.Pile1);
-					else if (pile == cards.Pile2)
-						card = Pop(ref context.FaceUpCards.Pile2);
-					else if (pile == cards.Pile3)
-						card = Pop(ref context.FaceUpCards.Pile3);
-					else if (pile == cards.Pile4)
-						card = Pop(ref context.FaceUpCards.Pile4);
+					card = Pop(pile);
 				}
+
 				if (card != null)
 					break;
 			}
 
 
+			bool moved;
 			if (card != null)
 			{
 				// Move card...
@@ -101,7 +92,6 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 					moved = _fallback.MoveCard(context);
 			}
 			return moved;
-
 		}
 	}
 }
