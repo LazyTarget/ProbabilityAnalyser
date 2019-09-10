@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ProbabilityAnalyser.Core.Models;
 
@@ -11,7 +12,7 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp.Strategy
 		{
 		}
 
-		protected override bool Peek(PlayingCard[] pile)
+		protected override bool Peek(AcesUpPile pile)
 		{
 			PlayingCard peek;
 			PlayingCard card = null;

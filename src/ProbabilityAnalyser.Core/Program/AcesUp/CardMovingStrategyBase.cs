@@ -16,20 +16,20 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 		}
 
 
-		protected virtual IEnumerable<PlayingCard[]> Prioritize(AcesUpFaceUpCards cards)
+		protected virtual IEnumerable<AcesUpPile> Prioritize(AcesUpRunContext context)
 		{
-			yield return cards.Pile1;
-			yield return cards.Pile2;
-			yield return cards.Pile3;
-			yield return cards.Pile4;
+			yield return context.FaceUpCards.Pile1;
+			yield return context.FaceUpCards.Pile2;
+			yield return context.FaceUpCards.Pile3;
+			yield return context.FaceUpCards.Pile4;
 		}
 
-		protected abstract bool Peek(PlayingCard[] pile);
+		protected abstract bool Peek(AcesUpPile pile);
 
-		protected virtual PlayingCard Pop(ref PlayingCard[] pile)
+		protected virtual PlayingCard Pop(ref AcesUpPile pile)
 		{
 			PlayingCard card;
-			pile = pile.PopTopCard(out card);
+			pile.PopTopCard(out card);
 			return card;
 		}
 
@@ -52,7 +52,7 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 			var cards = context.FaceUpCards;
 
 
-			var priority = Prioritize(context.FaceUpCards);
+			var priority = Prioritize(context);
 			foreach (var pile in priority)
 			{
 				if (pile.Length < 2)
