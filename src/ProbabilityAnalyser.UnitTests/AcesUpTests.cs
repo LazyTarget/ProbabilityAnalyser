@@ -25,13 +25,13 @@ namespace ProbabilityAnalyser.UnitTests
 
 
 
-		protected virtual int RunTest(Action<AcesUpRunContext> configure = null)
+		internal static int RunTest(Action<AcesUpRunContext> configure = null)
 		{
 			var wins = RunTest(configure, NR_OF_INSTANCES, PARALLEL_INSTANCES);
 			return wins;
 		}
 
-		protected virtual int RunTest(Action<AcesUpRunContext> configure, int instances, bool parallel)
+		internal static int RunTest(Action<AcesUpRunContext> configure, int instances, bool parallel)
 		{
 			TextWriter output = null;
 			if (instances <= 1)
@@ -81,7 +81,7 @@ namespace ProbabilityAnalyser.UnitTests
 		}
 
 
-		protected virtual int RunInstance(Action<AcesUpRunContext> configure, TextWriter output, int instanceId)
+		internal static int RunInstance(Action<AcesUpRunContext> configure, TextWriter output, int instanceId)
 		{
 			var deck = PlayingCardDeck.Standard52CardDeck();
 			deck.Shuffle();
