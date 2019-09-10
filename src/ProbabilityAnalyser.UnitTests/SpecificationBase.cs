@@ -1,26 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace ProbabilityAnalyser.UnitTests
 {
-	[TestClass]
+	[TestFixture]
 	public class SpecificationBase
 	{
-		[ClassInitialize]
+		[OneTimeSetUp]
 		protected virtual void Init()
 		{
 
 		}
 
-		[TestInitialize]
+		[SetUp]
 		protected virtual void Setup()
 		{
 
 		}
 
-		[TestCleanup]
+		[TearDown]
 		protected virtual void Cleanup()
 		{
 

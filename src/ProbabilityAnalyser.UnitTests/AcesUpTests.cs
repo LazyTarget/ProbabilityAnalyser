@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using ProbabilityAnalyser.Core.Models;
 using ProbabilityAnalyser.Core.Program.AcesUp;
 using ProbabilityAnalyser.Core.Program.AcesUp.Prioritizer;
@@ -11,7 +11,7 @@ using ProbabilityAnalyser.Core.Program.AcesUp.Strategy;
 
 namespace ProbabilityAnalyser.UnitTests
 {
-	[TestClass]
+	[TestFixture]
 	public class AcesUpTests
 	{
 		static AcesUpTests()
@@ -104,7 +104,7 @@ namespace ProbabilityAnalyser.UnitTests
 
 
 
-		[TestMethod]
+		[Test]
 		public void Strategy_MoveFirstAvailableCardToEmptySpace()
 		{
 			var wins = RunTest(
@@ -117,7 +117,7 @@ namespace ProbabilityAnalyser.UnitTests
 		}
 
 
-		[TestMethod]
+		[Test]
 		public void Strategy_MoveFirstAvailableCardToEmptySpace_when_hard_mode()
 		{
 			var wins = RunTest(
@@ -131,7 +131,7 @@ namespace ProbabilityAnalyser.UnitTests
 
 
 
-		[TestMethod]
+		[Test]
 		public void Strategy_MoveCardBasedOnDirectlyUnderTopCard_to_MoveFirstAvailableCardToEmptySpace()
 		{
 			var wins = RunTest(
@@ -147,7 +147,7 @@ namespace ProbabilityAnalyser.UnitTests
 
 
 
-		[TestMethod]
+		[Test]
 		public void Strategy_MoveCardBasedOnDirectlyUnderTopCard_to_MoveFirstAvailableCardToEmptySpace_with_largest_pile_prioritizer()
 		{
 			var wins = RunTest(
@@ -164,7 +164,7 @@ namespace ProbabilityAnalyser.UnitTests
 
 
 
-		[TestMethod]
+		[Test]
 		public void Strategy_MoveCardBasedOnDirectlyUnderTopCard_to_MoveFirstAvailableCardToEmptySpace_when_hard_mode()
 		{
 			var wins = RunTest(
@@ -180,7 +180,7 @@ namespace ProbabilityAnalyser.UnitTests
 
 
 
-		[TestMethod]
+		[Test]
 		public void Strategy_AcesToEmptyPiles()
 		{
 			var wins = RunTest(
@@ -194,7 +194,7 @@ namespace ProbabilityAnalyser.UnitTests
 
 
 
-		[TestMethod]
+		[Test]
 		public void Strategy_AcesToEmptyPiles_when_hard_mode()
 		{
 			var wins = RunTest(
@@ -208,7 +208,7 @@ namespace ProbabilityAnalyser.UnitTests
 
 
 
-		[TestMethod]
+		[Test]
 		public void Strategy_AcesToEmptyPiles_to_MoveFirstAvailableCardToEmptySpace()
 		{
 			var wins = RunTest(
@@ -224,7 +224,7 @@ namespace ProbabilityAnalyser.UnitTests
 
 
 
-		[TestMethod]
+		[Test]
 		public void Strategy_AcesToEmptyPiles_to_MoveFirstAvailableCardToEmptySpace_when_hard_mode()
 		{
 			var wins = RunTest(
@@ -240,7 +240,7 @@ namespace ProbabilityAnalyser.UnitTests
 
 
 
-		[TestMethod]
+		[Test]
 		public void Strategy_AcesToEmptyPiles_to_MoveCardBasedOnDirectlyUnderTopCard_to_MoveFirstAvailableCardToEmptySpace()
 		{
 			var wins = RunTest(
@@ -258,7 +258,7 @@ namespace ProbabilityAnalyser.UnitTests
 
 
 
-		[TestMethod]
+		[Test]
 		public void Strategy_AcesToEmptyPiles_to_MoveCardBasedOnDirectlyUnderTopCard_to_MoveFirstAvailableCardToEmptySpace_when_hard_mode()
 		{
 			var wins = RunTest(
@@ -275,7 +275,7 @@ namespace ProbabilityAnalyser.UnitTests
 		}
 
 
-		[TestMethod]
+		[Test]
 		public void Strategy_MoveCardBasedOnDirectlyUnderTopCard_to_AcesToEmptyPiles_to_MoveFirstAvailableCardToEmptySpace_when_hard_mode()
 		{
 			var wins = RunTest(

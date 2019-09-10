@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using ProbabilityAnalyser.Core.Program.AcesUp;
 using ProbabilityAnalyser.Core.Program.AcesUp.Strategy;
 
 namespace ProbabilityAnalyser.UnitTests
 {
-	[TestClass]
+	[TestFixture]
 	public class AcesUpSpecification : SpecificationBase
 	{
 		protected readonly IList<Action<AcesUpRunContext>> Configurations 
@@ -49,7 +49,7 @@ namespace ProbabilityAnalyser.UnitTests
 
 		public class count_wins : AcesUpSpecification
 		{
-			[TestMethod]
+			[Test]
 			public void should_have_more_than_0_5_percent_win_rate()
 			{
 				var expected = 0.005;
