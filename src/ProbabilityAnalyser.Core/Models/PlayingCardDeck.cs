@@ -75,13 +75,13 @@ namespace ProbabilityAnalyser.Core.Models
 			}
 			else
 			{
-				//var index = Cards.Length - 1;
-				//card = Cards[index];
-				//var cards = Cards.Take(index).ToArray();
-				//Cards = cards;
-
-				var cards = Cards.PopTopCard(out card);
+				var index = Cards.Length - 1;
+				card = Cards[index];
+				var cards = Cards.Take(index).ToArray();
 				Cards = cards;
+
+				//var cards = Cards.PopTopCard(out card);
+				//Cards = cards;
 			}
 			return card;
 		}
