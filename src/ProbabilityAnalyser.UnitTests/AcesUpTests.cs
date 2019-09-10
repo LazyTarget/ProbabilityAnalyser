@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProbabilityAnalyser.Core.Models;
 using ProbabilityAnalyser.Core.Program.AcesUp;
+using ProbabilityAnalyser.Core.Program.AcesUp.Prioritizer;
 using ProbabilityAnalyser.Core.Program.AcesUp.Strategy;
 
 namespace ProbabilityAnalyser.UnitTests
@@ -41,7 +42,12 @@ namespace ProbabilityAnalyser.UnitTests
 			double wins = 0;
 			Action<int, ParallelLoopState> action = (i, s) =>
 			{
-				var pts = RunInstance(configure, output, i);
+				Action<AcesUpRunContext> conf = (ctx) =>
+				{
+					configure(ctx);
+				};
+
+				var pts = RunInstance(conf, output, i);
 				if (pts > 48)
 				{
 					wins++;
@@ -135,6 +141,23 @@ namespace ProbabilityAnalyser.UnitTests
 						new MoveFirstAvailableCardToEmptySpace()
 					);
 					c.HardMode = false;
+				}
+			);
+		}
+
+
+
+		[TestMethod]
+		public void Strategy_MoveCardBasedOnDirectlyUnderTopCard_to_MoveFirstAvailableCardToEmptySpace_with_largest_pile_prioritizer()
+		{
+			var wins = RunTest(
+				c =>
+				{
+					c.MovingStrategy = new MoveCardBasedOnDirectlyUnderTopCard(
+						new MoveFirstAvailableCardToEmptySpace()
+					);
+					c.HardMode = false;
+					c.Prioritizer = new LargestPilePrioritizer();
 				}
 			);
 		}
