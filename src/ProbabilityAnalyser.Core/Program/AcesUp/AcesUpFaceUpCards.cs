@@ -8,12 +8,22 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 {
 	public class AcesUpFaceUpCards
 	{
+		private readonly AcesUpRunContext _context;
 		public int Length => Pile1.Length + Pile2.Length + Pile3.Length + Pile4.Length;
 
-		public PlayingCard[] Pile1 = new PlayingCard[0];
-		public PlayingCard[] Pile2 = new PlayingCard[0];
-		public PlayingCard[] Pile3 = new PlayingCard[0];
-		public PlayingCard[] Pile4 = new PlayingCard[0];
+		public AcesUpPile Pile1;
+		public AcesUpPile Pile2;
+		public AcesUpPile Pile3;
+		public AcesUpPile Pile4;
+
+		public AcesUpFaceUpCards(AcesUpRunContext context)
+		{
+			_context = context;
+			Pile1 = new AcesUpPile(context);
+			Pile2 = new AcesUpPile(context);
+			Pile3 = new AcesUpPile(context);
+			Pile4 = new AcesUpPile(context);
+		}
 
 		public IEnumerable<PlayingCard> Top()
 		{
@@ -35,13 +45,13 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 				// Card is on top of pile, can discard
 
 				if (Pile1.LastOrDefault() == card)
-					Pile1 = Pile1.PopTopCard();
+					Pile1.PopTopCard();
 				else if (Pile2.LastOrDefault() == card)
-					Pile2 = Pile2.PopTopCard();
+					Pile2.PopTopCard();
 				else if (Pile3.LastOrDefault() == card)
-					Pile3 = Pile3.PopTopCard();
+					Pile3.PopTopCard();
 				else if (Pile4.LastOrDefault() == card)
-					Pile4 = Pile4.PopTopCard();
+					Pile4.PopTopCard();
 				else
 				{
 					return false;
@@ -76,13 +86,13 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 		public void AppendCardToPile(PlayingCard card, int pile)
 		{
 			if (pile == 1)
-				Pile1 = Pile1.Concat(new[] { card }).ToArray();
+				Pile1.AppendCard(card);
 			else if (pile == 2)
-				Pile2 = Pile2.Concat(new[] { card }).ToArray();
+				Pile2.AppendCard(card);
 			else if (pile == 3)
-				Pile3 = Pile3.Concat(new[] { card }).ToArray();
+				Pile3.AppendCard(card);
 			else if (pile == 4)
-				Pile4 = Pile4.Concat(new[] { card }).ToArray();
+				Pile4.AppendCard(card);
 			else
 			{
 

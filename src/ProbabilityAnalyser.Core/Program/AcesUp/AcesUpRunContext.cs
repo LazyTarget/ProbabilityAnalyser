@@ -15,10 +15,11 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 				new MoveCardBasedOnDirectlyUnderTopCard(
 					new MoveFirstAvailableCardToEmptySpace()
 				);
+			FaceUpCards = new AcesUpFaceUpCards(this);
 		}
 
 		public PlayingCardDeck Deck { get; }
-		public AcesUpFaceUpCards FaceUpCards { get; } = new AcesUpFaceUpCards();
+		public AcesUpFaceUpCards FaceUpCards { get; }
 		public CancellationToken Token { get; }
 		public bool HardMode { get; set; }
 

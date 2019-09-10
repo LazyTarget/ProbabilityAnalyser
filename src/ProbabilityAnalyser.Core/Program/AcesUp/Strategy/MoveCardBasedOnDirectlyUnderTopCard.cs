@@ -4,13 +4,27 @@ using ProbabilityAnalyser.Core.Models;
 
 namespace ProbabilityAnalyser.Core.Program.AcesUp.Strategy
 {
-	public class MoveCardBasedOnDirectlyUnderTopCard : ICardMovingStrategy
+	public class MoveCardBasedOnDirectlyUnderTopCard : CardMovingStrategyBase
 	{
 		private readonly ICardMovingStrategy _fallback;
 
 		public MoveCardBasedOnDirectlyUnderTopCard(ICardMovingStrategy fallback = null)
 		{
 			_fallback = fallback;
+		}
+
+		protected override bool Peek(PlayingCard[] pile)
+		{
+			PlayingCard peek;
+			PlayingCard card = null;
+			if (pile.Length > 1 && (peek = pile.Reverse().ElementAtOrDefault(1)) != null)
+			{
+				
+
+				card = peek;
+			}
+
+			return card != null;
 		}
 
 		public virtual bool MoveCard(AcesUpRunContext context)
