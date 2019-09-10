@@ -49,26 +49,79 @@ namespace ProbabilityAnalyser.UnitTests
 
 		public class count_wins : AcesUpSpecification
 		{
+			protected virtual void BetterThan(double percentage)
+			{
+				var actual = (int)(Result ?? 0) / (double)Instances;
+				Assert.IsTrue(actual > percentage, $"Did not reach target limit of {percentage:P2}, was: {actual:P2}");
+			}
+		}
+
+		public class strategy_is_move_first_available_to_empty : count_wins
+		{
+			protected override void given()
+			{
+				base.given();
+				Configurations.Add(c =>
+				{
+					c.MovingStrategy = new MoveFirstAvailableCardToEmptySpace();
+				});
+			}
+
+
 			[Test]
 			public void should_have_more_than_0_5_percent_win_rate()
 			{
 				var expected = 0.005;
-				var percent = (double) Result / (double) Instances;
-				Assert.IsTrue(percent > expected);
+				BetterThan(expected);
+			}
+		}
+
+		public class strategy_is_move_based_on_card_under_top_card : count_wins
+		{
+			protected override void given()
+			{
+				base.given();
+				Configurations.Add(c =>
+				{
+					c.MovingStrategy = new MoveCardBasedOnDirectlyUnderTopCard();
+				});
+			}
+
+
+			[Test]
+			public virtual void should_have_more_than_0_5_percent_win_rate()
+			{
+				var expected = 0.005;
+				BetterThan(expected);
+			}
+
+			[Test]
+			public virtual void have_at_least_one_win()
+			{
+				var actual = (int)(Result ?? 0);
+				Assert.IsTrue(actual > 1, $"Has no wins on {Instances} runs!");
 			}
 
 
 
-			public class strategy_is_move_first_available_to_empty : count_wins
+			public class strategy_is_move_first_available_to_empty : count_wins.strategy_is_move_based_on_card_under_top_card
 			{
 				protected override void given()
 				{
 					base.given();
 					Configurations.Add(c =>
 					{
-						c.MovingStrategy = new MoveFirstAvailableCardToEmptySpace();
+						c.MovingStrategy = new MoveCardBasedOnDirectlyUnderTopCard(c.MovingStrategy);
 					});
 				}
+
+
+				//[Test]
+				//public override void should_have_more_than_0_5_percent_win_rate()
+				//{
+				//	var expected = 0.005;
+				//	BetterThan(expected);
+				//}
 			}
 		}
 
