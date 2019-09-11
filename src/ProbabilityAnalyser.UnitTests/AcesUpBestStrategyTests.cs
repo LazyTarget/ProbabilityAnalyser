@@ -23,7 +23,9 @@ namespace ProbabilityAnalyser.UnitTests
 		{
 			new DefaultPilePrioritizer(),
 			new GreatestTopCardPrioritizer(),
+			new LowestTopCardPrioritizer(),
 			new LargestPilePrioritizer(),
+			new SmallestPilePrioritizer(), 
 		};
 
 		protected virtual void AddCombination(List<AcesUpArgCombination> list, Action<AcesUpStrategyBuilder> build)
