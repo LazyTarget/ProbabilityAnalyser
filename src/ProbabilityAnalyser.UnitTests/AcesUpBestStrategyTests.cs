@@ -31,11 +31,41 @@ namespace ProbabilityAnalyser.UnitTests
 			}, -1);
 			combinations.Add(new AcesUpArgCombination
 			{
+				FriendlyName = $"Move first available :: largest pile prioritizer",
+				MovingStrategy = new MoveFirstAvailableCardToEmptySpace(),
+				Prioritizer = new LargestPilePrioritizer()
+			}, -1);
+			combinations.Add(new AcesUpArgCombination
+			{
+				FriendlyName = $"Move first available :: greatest top card prioritizer",
+				MovingStrategy = new MoveFirstAvailableCardToEmptySpace(),
+				Prioritizer = new GreatestTopCardPrioritizer()
+			}, -1);
+
+			combinations.Add(new AcesUpArgCombination
+			{
 				FriendlyName = $"Move based on card under otherwise move first available",
 				MovingStrategy = new MoveCardBasedOnDirectlyUnderTopCard(
 					new MoveFirstAvailableCardToEmptySpace()
 				)
 			}, -1);
+			combinations.Add(new AcesUpArgCombination
+			{
+				FriendlyName = $"Move based on card under otherwise move first available :: largest pile prioritizer",
+				MovingStrategy = new MoveCardBasedOnDirectlyUnderTopCard(
+					new MoveFirstAvailableCardToEmptySpace()
+				),
+				Prioritizer = new LargestPilePrioritizer()
+			}, -1);
+			combinations.Add(new AcesUpArgCombination
+			{
+				FriendlyName = $"Move based on card under otherwise move first available :: greatest top card prioritizer",
+				MovingStrategy = new MoveCardBasedOnDirectlyUnderTopCard(
+					new MoveFirstAvailableCardToEmptySpace()
+				),
+				Prioritizer = new GreatestTopCardPrioritizer()
+			}, -1);
+
 			combinations.Add(new AcesUpArgCombination
 			{
 				FriendlyName = $"Move first available or based on card under",
@@ -45,13 +75,22 @@ namespace ProbabilityAnalyser.UnitTests
 			}, -1);
 			combinations.Add(new AcesUpArgCombination
 			{
-				FriendlyName = $"Move aces to empty piles, then move based on card under otherwise move first available",
-				MovingStrategy = new AcesToEmptyPiles(
-					new MoveFirstAvailableCardToEmptySpace(
-						new MoveCardBasedOnDirectlyUnderTopCard()
-					)
-				)
+				FriendlyName = $"Move first available or based on card under :: largest pile prioritizer",
+				MovingStrategy = new MoveFirstAvailableCardToEmptySpace(
+					new MoveCardBasedOnDirectlyUnderTopCard()
+				),
+				Prioritizer = new LargestPilePrioritizer()
 			}, -1);
+			combinations.Add(new AcesUpArgCombination
+			{
+				FriendlyName = $"Move first available or based on card under :: greatest top card prioritizer",
+				MovingStrategy = new MoveFirstAvailableCardToEmptySpace(
+					new MoveCardBasedOnDirectlyUnderTopCard()
+				),
+				Prioritizer = new GreatestTopCardPrioritizer()
+			}, -1);
+
+
 			combinations.Add(new AcesUpArgCombination
 			{
 				FriendlyName = $"Move aces to empty piles, then move first available or based on card under",
@@ -60,6 +99,38 @@ namespace ProbabilityAnalyser.UnitTests
 						new MoveCardBasedOnDirectlyUnderTopCard()
 					)
 				)
+			}, -1);
+
+			combinations.Add(new AcesUpArgCombination
+			{
+				FriendlyName = $"Move aces to empty piles, then move based on card under otherwise move first available",
+				MovingStrategy = new AcesToEmptyPiles(
+					new MoveFirstAvailableCardToEmptySpace(
+						new MoveCardBasedOnDirectlyUnderTopCard()
+					)
+				)
+			}, -1);
+
+			combinations.Add(new AcesUpArgCombination
+			{
+				FriendlyName = $"Move aces to empty piles, then move based on card under top otherwise move first available :: largest pile prioritizer",
+				MovingStrategy = new AcesToEmptyPiles(
+					new MoveFirstAvailableCardToEmptySpace(
+						new MoveCardBasedOnDirectlyUnderTopCard()
+					)
+				),
+				Prioritizer = new LargestPilePrioritizer()
+			}, -1);
+
+			combinations.Add(new AcesUpArgCombination
+			{
+				FriendlyName = $"Move aces to empty piles, then move based on card under top otherwise move first available :: greatest top card prioritizer",
+				MovingStrategy = new AcesToEmptyPiles(
+					new MoveCardBasedOnDirectlyUnderTopCard(
+						new MoveFirstAvailableCardToEmptySpace()
+					)
+				),
+				Prioritizer = new GreatestTopCardPrioritizer()
 			}, -1);
 
 			#endregion
