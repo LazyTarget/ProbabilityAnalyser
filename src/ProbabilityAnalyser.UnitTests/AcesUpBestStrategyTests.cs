@@ -17,6 +17,42 @@ namespace ProbabilityAnalyser.UnitTests
 	[TestFixture]
 	public class AcesUpBestStrategyTests
 	{
+		#region Combinations
+
+		protected virtual IList<AcesUpArgCombination> FetchStrategyCombinations()
+		{
+			var combinations = new List<AcesUpArgCombination>();
+			var builder = new AcesUpStrategyBuilder();
+
+
+			combinations.Add(builder
+				.AppendStrategy<AcesToEmptyPiles>()
+				.AppendStrategy<MoveCardBasedOnDirectlyUnderTopCard>()
+				.AppendStrategy<MoveFirstAvailableCardToEmptySpace>()
+				.Prioritizer<LargestPilePrioritizer>()
+				.Build()
+			);
+
+			combinations.Add(builder
+				.AppendStrategy<MoveCardBasedOnDirectlyUnderTopCard>()
+				.AppendStrategy<MoveFirstAvailableCardToEmptySpace>()
+				.Prioritizer<LargestPilePrioritizer>()
+				.Build()
+			);
+
+			combinations.Add(builder
+				.AppendStrategy<AcesToEmptyPiles>()
+				.AppendStrategy<MoveCardBasedOnDirectlyUnderTopCard>()
+				.AppendStrategy<MoveFirstAvailableCardToEmptySpace>()
+				.Build()
+			);
+
+			return combinations;
+		}
+
+		#endregion
+
+
 		[Test]
 		public void DetermineBestStrategy()
 		{
@@ -154,6 +190,33 @@ namespace ProbabilityAnalyser.UnitTests
 				var args = pair.Key;
 				var wins = pair.Value;
 				Console.WriteLine($"{wins} wins\t :: {(wins/(double)NR_OF_INSTANCES):P2}\t\t Strategy: {args.FriendlyName}");
+			}
+		}
+
+
+		[Test]
+		public void DetermineBestStrategy2()
+		{
+			var combinations = FetchStrategyCombinations();
+
+			var results = new Dictionary<AcesUpArgCombination, int>();
+			for (var i = 0; i < combinations.Count; i++)
+			{
+				var args = combinations.ElementAt(i);
+				var wins = RunTest(c => args.ApplyTo(c));
+				results[args] = wins;
+			}
+
+
+			Console.WriteLine($"Out of {NR_OF_INSTANCES} instances, the following strategies where run:");
+
+			var sorted = results.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+			for (var i = 0; i < sorted.Count; i++)
+			{
+				var pair = sorted.ElementAt(i);
+				var args = pair.Key;
+				var wins = pair.Value;
+				Console.WriteLine($"{wins} wins\t :: {(wins / (double)NR_OF_INSTANCES):P2}\t\t Strategy: {args.FriendlyName}");
 			}
 		}
 	}
