@@ -20,10 +20,12 @@ namespace ProbabilityAnalyser.UnitTests
 		{
 			if (System.Diagnostics.Debugger.IsAttached)
 				NR_OF_INSTANCES = 1;
+			Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
 		}
 
 		public static int NR_OF_INSTANCES = 10000;
 		public static bool PARALLEL_INSTANCES = false;
+		public const double MIN_WIN_PERCENTAGE = 0.005;
 
 
 
@@ -104,6 +106,12 @@ namespace ProbabilityAnalyser.UnitTests
 			return points;
 		}
 
+		private void AssertMinWinPercentage(int wins, double percentage = MIN_WIN_PERCENTAGE)
+		{
+			var actual = wins / (double)NR_OF_INSTANCES;
+			Assert.IsTrue(actual > percentage, $"Did not reach target limit of {percentage:P2}, was: {actual:P2}");
+		}
+
 
 
 		[Test]
@@ -116,6 +124,7 @@ namespace ProbabilityAnalyser.UnitTests
 					c.HardMode = false;
 				}
 			);
+			AssertMinWinPercentage(wins);
 		}
 
 
@@ -129,6 +138,7 @@ namespace ProbabilityAnalyser.UnitTests
 					c.HardMode = true;
 				}
 			);
+			AssertMinWinPercentage(wins);
 		}
 
 
@@ -145,8 +155,8 @@ namespace ProbabilityAnalyser.UnitTests
 					c.HardMode = false;
 				}
 			);
+			AssertMinWinPercentage(wins);
 		}
-
 
 
 		[Test]
@@ -162,6 +172,7 @@ namespace ProbabilityAnalyser.UnitTests
 					c.Prioritizer = new LargestPilePrioritizer();
 				}
 			);
+			AssertMinWinPercentage(wins);
 		}
 
 
@@ -178,6 +189,7 @@ namespace ProbabilityAnalyser.UnitTests
 					c.HardMode = true;
 				}
 			);
+			AssertMinWinPercentage(wins);
 		}
 
 
@@ -192,6 +204,7 @@ namespace ProbabilityAnalyser.UnitTests
 					c.HardMode = false;
 				}
 			);
+			AssertMinWinPercentage(wins);
 		}
 
 
@@ -206,6 +219,7 @@ namespace ProbabilityAnalyser.UnitTests
 					c.HardMode = true;
 				}
 			);
+			AssertMinWinPercentage(wins);
 		}
 
 
@@ -222,6 +236,7 @@ namespace ProbabilityAnalyser.UnitTests
 					c.HardMode = false;
 				}
 			);
+			AssertMinWinPercentage(wins);
 		}
 
 
@@ -238,6 +253,7 @@ namespace ProbabilityAnalyser.UnitTests
 					c.HardMode = true;
 				}
 			);
+			AssertMinWinPercentage(wins);
 		}
 
 
@@ -256,6 +272,7 @@ namespace ProbabilityAnalyser.UnitTests
 					c.HardMode = false;
 				}
 			);
+			AssertMinWinPercentage(wins);
 		}
 
 
@@ -274,6 +291,7 @@ namespace ProbabilityAnalyser.UnitTests
 					c.HardMode = true;
 				}
 			);
+			AssertMinWinPercentage(wins);
 		}
 
 
@@ -291,6 +309,7 @@ namespace ProbabilityAnalyser.UnitTests
 					c.HardMode = true;
 				}
 			);
+			AssertMinWinPercentage(wins);
 		}
 
 

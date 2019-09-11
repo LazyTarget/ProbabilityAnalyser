@@ -103,6 +103,8 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 
 
 			str += $"  ({extra})";
+			while (str.Length < 35)
+				str += " ";
 
 			if (_logFormatter != null)
 				str = _logFormatter.Invoke(str);
