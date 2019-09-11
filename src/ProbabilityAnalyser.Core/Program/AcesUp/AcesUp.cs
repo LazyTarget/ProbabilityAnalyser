@@ -75,32 +75,7 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 			if (_output == null)
 				return;
 
-			var str = "";
-
-			var card = context.FaceUpCards.Pile1.LastOrDefault();
-			if (card != null)
-				str += $"{card?.ToShortString()} ";
-			else
-				str += $"    ";
-
-			card = context.FaceUpCards.Pile2.LastOrDefault();
-			if (card != null)
-				str += $"{card?.ToShortString()} ";
-			else
-				str += $"    ";
-
-			card = context.FaceUpCards.Pile3.LastOrDefault();
-			if (card != null)
-				str += $"{card?.ToShortString()} ";
-			else
-				str += $"    ";
-
-			card = context.FaceUpCards.Pile4.LastOrDefault();
-			if (card != null)
-				str += $"{card?.ToShortString()} ";
-			else
-				str += $"    ";
-
+			var str = context.FaceUpCards.TopCardsToPrettyString();
 
 			str += $"  ({extra})";
 			while (str.Length < 35)

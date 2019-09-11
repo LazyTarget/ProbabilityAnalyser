@@ -25,6 +25,44 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 			Pile4 = new AcesUpPile(context);
 		}
 
+		public string TopCardsToPrettyString()
+		{
+			var str = "";
+
+			var card = Pile1.LastOrDefault();
+			if (card != null)
+				str += $"{card?.ToShortString()} ";
+			else
+				str += $"    ";
+
+			card = Pile2.LastOrDefault();
+			if (card != null)
+				str += $"{card?.ToShortString()} ";
+			else
+				str += $"    ";
+
+			card = Pile3.LastOrDefault();
+			if (card != null)
+				str += $"{card?.ToShortString()} ";
+			else
+				str += $"    ";
+
+			card = Pile4.LastOrDefault();
+			if (card != null)
+				str += $"{card?.ToShortString()} ";
+			else
+				str += $"    ";
+
+			return str;
+		}
+
+
+		public override string ToString()
+		{
+			var str = TopCardsToPrettyString();
+			return str;
+		}
+
 		public IEnumerable<PlayingCard> Top()
 		{
 			if (Pile1.Any())
