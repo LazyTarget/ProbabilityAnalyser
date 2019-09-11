@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using ProbabilityAnalyser.Core.Extensions;
@@ -7,6 +8,7 @@ using ProbabilityAnalyser.Core.Models;
 
 namespace ProbabilityAnalyser.Core.Program.AcesUp.Prioritizer
 {
+	[DisplayName("by piles with highest top card")]
 	public class GreatestTopCardPrioritizer : IPilePrioritizer
 	{
 		public virtual IEnumerable<AcesUpPile> Prioritize(AcesUpRunContext context)

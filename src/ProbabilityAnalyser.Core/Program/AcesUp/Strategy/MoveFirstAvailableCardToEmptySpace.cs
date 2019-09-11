@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using ProbabilityAnalyser.Core.Models;
 
 namespace ProbabilityAnalyser.Core.Program.AcesUp.Strategy
 {
+	[DisplayName("Move first possible card (left to right)")]
 	public class MoveFirstAvailableCardToEmptySpace : CardMovingStrategyBase
 	{
 		public MoveFirstAvailableCardToEmptySpace(ICardMovingStrategy fallback = null)

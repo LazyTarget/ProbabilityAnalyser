@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using ProbabilityAnalyser.Core.Models;
 
 namespace ProbabilityAnalyser.Core.Program.AcesUp.Strategy
 {
+	[DisplayName("Based on card under top")]
 	public class MoveCardBasedOnDirectlyUnderTopCard : CardMovingStrategyBase
 	{
 		public MoveCardBasedOnDirectlyUnderTopCard(ICardMovingStrategy fallback = null)

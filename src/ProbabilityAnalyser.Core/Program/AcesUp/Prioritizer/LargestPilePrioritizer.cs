@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
 namespace ProbabilityAnalyser.Core.Program.AcesUp.Prioritizer
 {
+	[DisplayName("by largest pile")]
 	public class LargestPilePrioritizer : IPilePrioritizer
 	{
 		public IEnumerable<AcesUpPile> Prioritize(AcesUpRunContext context)
