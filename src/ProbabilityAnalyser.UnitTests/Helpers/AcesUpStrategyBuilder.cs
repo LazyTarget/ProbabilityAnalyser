@@ -75,13 +75,24 @@ namespace ProbabilityAnalyser.UnitTests
 			return this;
 		}
 
-		public AcesUpArgCombination Build()
+		public AcesUpStrategyBuilder New()
+		{
+			Clear();
+			return this;
+		}
+
+		public AcesUpArgCombination Peek()
 		{
 			var result = new AcesUpArgCombination();
 			result.Prioritizer = _prioritizer;
 			result.MovingStrategy = _strategy;
 			result.FriendlyName = GetGeneratedDisplayName();
+			return result;
+		}
 
+		public AcesUpArgCombination Build()
+		{
+			var result = Peek();
 			Clear();
 			return result;
 		}

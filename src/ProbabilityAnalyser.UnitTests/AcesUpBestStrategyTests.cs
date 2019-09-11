@@ -19,35 +19,85 @@ namespace ProbabilityAnalyser.UnitTests
 	{
 		#region Combinations
 
+		private IPilePrioritizer[] _prioritizers = new IPilePrioritizer[]
+		{
+			new DefaultPilePrioritizer(),
+			new GreatestTopCardPrioritizer(),
+			new LargestPilePrioritizer(),
+		};
+
+		protected virtual IEnumerable<AcesUpArgCombination> BuildForAllPrioritizers(AcesUpStrategyBuilder builder)
+		{
+			foreach (var prioritizer in _prioritizers)
+			{
+				var combination = builder
+					.Prioritizer(prioritizer)
+					.Peek();
+				yield return combination;
+			}
+		}
+
 		protected virtual IList<AcesUpArgCombination> FetchStrategyCombinations()
 		{
 			var combinations = new List<AcesUpArgCombination>();
 			var builder = new AcesUpStrategyBuilder();
 
 
-			combinations.Add(builder
-				.AppendStrategy<AcesToEmptyPiles>()
-				.AppendStrategy<MoveCardBasedOnDirectlyUnderTopCard>()
-				.AppendStrategy<MoveFirstAvailableCardToEmptySpace>()
-				.Prioritizer<LargestPilePrioritizer>()
-				.Build()
+			combinations.AddRange(BuildForAllPrioritizers(
+				builder
+					.AppendStrategy<MoveFirstAvailableCardToEmptySpace>()
+				)
+			);
+			combinations.AddRange(BuildForAllPrioritizers(
+				builder
+					.AppendStrategy<MoveCardBasedOnDirectlyUnderTopCard>()
+					.AppendStrategy<MoveFirstAvailableCardToEmptySpace>()
+				)
+			);
+			combinations.AddRange(BuildForAllPrioritizers(
+				builder
+					.AppendStrategy<MoveFirstAvailableCardToEmptySpace>()
+					.AppendStrategy<MoveCardBasedOnDirectlyUnderTopCard>()
+				)
+			);
+			combinations.AddRange(BuildForAllPrioritizers(
+				builder
+					.AppendStrategy<AcesToEmptyPiles>()
+					.AppendStrategy<MoveFirstAvailableCardToEmptySpace>()
+					.AppendStrategy<MoveCardBasedOnDirectlyUnderTopCard>()
+				)
+			);
+			combinations.AddRange(BuildForAllPrioritizers(
+				builder
+					.AppendStrategy<AcesToEmptyPiles>()
+					.AppendStrategy<MoveCardBasedOnDirectlyUnderTopCard>()
+					.AppendStrategy<MoveFirstAvailableCardToEmptySpace>()
+				)
+			);
+			combinations.AddRange(BuildForAllPrioritizers(
+				builder
+					.AppendStrategy<MoveCardBasedOnDirectlyUnderTopCard>()
+					.AppendStrategy<AcesToEmptyPiles>()
+					.AppendStrategy<MoveFirstAvailableCardToEmptySpace>()
+				)
+			);
+			combinations.AddRange(BuildForAllPrioritizers(
+				builder
+					.AppendStrategy<MoveCardBasedOnDirectlyUnderTopCard>()
+					.AppendStrategy<MoveFirstAvailableCardToEmptySpace>()
+					.AppendStrategy<AcesToEmptyPiles>()
+				)
+			);
+			combinations.AddRange(BuildForAllPrioritizers(
+				builder
+					.AppendStrategy<MoveFirstAvailableCardToEmptySpace>()
+					.AppendStrategy<MoveCardBasedOnDirectlyUnderTopCard>()
+					.AppendStrategy<AcesToEmptyPiles>()
+				)
 			);
 
-			combinations.Add(builder
-				.AppendStrategy<MoveCardBasedOnDirectlyUnderTopCard>()
-				.AppendStrategy<MoveFirstAvailableCardToEmptySpace>()
-				.Prioritizer<LargestPilePrioritizer>()
-				.Build()
-			);
-
-			combinations.Add(builder
-				.AppendStrategy<AcesToEmptyPiles>()
-				.AppendStrategy<MoveCardBasedOnDirectlyUnderTopCard>()
-				.AppendStrategy<MoveFirstAvailableCardToEmptySpace>()
-				.Build()
-			);
-
-			return combinations;
+			var distinct = combinations.GroupBy(x => x.FriendlyName).Select(x => x.First()).ToList();
+			return distinct;
 		}
 
 		#endregion
@@ -57,7 +107,7 @@ namespace ProbabilityAnalyser.UnitTests
 		public void DetermineBestStrategy()
 		{
 			var combinations = new Dictionary<AcesUpArgCombination, int>();
-			
+
 			#region Combinations
 
 			combinations.Add(new AcesUpArgCombination
@@ -189,7 +239,7 @@ namespace ProbabilityAnalyser.UnitTests
 				var pair = sorted.ElementAt(i);
 				var args = pair.Key;
 				var wins = pair.Value;
-				Console.WriteLine($"{wins} wins\t :: {(wins/(double)NR_OF_INSTANCES):P2}\t\t Strategy: {args.FriendlyName}");
+				Console.WriteLine($"{wins} wins\t :: {(wins / (double)NR_OF_INSTANCES):P2}\t\t Strategy: {args.FriendlyName}");
 			}
 		}
 
