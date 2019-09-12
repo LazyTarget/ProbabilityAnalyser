@@ -111,7 +111,7 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 
 		private void AssertMinWinPercentage(int wins, double percentage = MIN_WIN_PERCENTAGE)
 		{
-			var actual = wins / (double)NR_OF_INSTANCES;
+			var actual = wins / (double)percentage;
 			Assert.IsTrue(actual > percentage, $"Did not reach target limit of {percentage:P2}, was: {actual:P2}");
 		}
 
