@@ -116,12 +116,12 @@ namespace ProbabilityAnalyser.UnitTests
 			for (var i = 0; i < combinations.Count; i++)
 			{
 				var args = combinations.ElementAt(i);
-				var wins = RunTest(c => args.ApplyTo(c));
+				var wins = ExecuteTest(c => args.ApplyTo(c), NR_OF_INSTANCES, PARALLEL_INSTANCES);
 				results[args] = wins;
 			}
 
 
-			Console.WriteLine($"Out of {NR_OF_INSTANCES} instances, the following strategies where run:");
+			Console.WriteLine($"Out of {NR_OF_INSTANCES} instances, the following {results.Count} strategy combinations where run:");
 
 			var sorted = results.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
 			for (var i = 0; i < sorted.Count; i++)

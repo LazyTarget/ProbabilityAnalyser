@@ -29,13 +29,20 @@ namespace ProbabilityAnalyser.UnitTests
 
 
 
-		internal static int RunTest(Action<AcesUpRunContext> configure = null)
+		public static int RunTest(Action<AcesUpRunContext> configure = null)
 		{
 			var wins = RunTest(configure, NR_OF_INSTANCES, PARALLEL_INSTANCES);
 			return wins;
 		}
 
-		internal static int RunTest(Action<AcesUpRunContext> configure, int instances, bool parallel)
+		public static int RunTest(Action<AcesUpRunContext> configure, int instances, bool parallel)
+		{
+			var wins = (double)ExecuteTest(configure, instances, parallel);
+			Console.WriteLine($"{wins} wins out of {instances} == {(wins / instances):P4}");
+			return (int)wins;
+		}
+
+		internal static int ExecuteTest(Action<AcesUpRunContext> configure, int instances, bool parallel)
 		{
 			TextWriter output = null;
 			if (instances <= 1)
@@ -43,7 +50,7 @@ namespace ProbabilityAnalyser.UnitTests
 				output = Console.Out;
 			}
 
-			double wins = 0;
+			var wins = 0;
 			Action<int, ParallelLoopState> action = (i, s) =>
 			{
 				Action<AcesUpRunContext> conf = (ctx) =>
@@ -79,9 +86,7 @@ namespace ProbabilityAnalyser.UnitTests
 					action(i, null);
 				}
 			}
-
-			Console.WriteLine($"{wins} wins out of {instances} == {(wins / instances):P4}");
-			return (int)wins;
+			return wins;
 		}
 
 
