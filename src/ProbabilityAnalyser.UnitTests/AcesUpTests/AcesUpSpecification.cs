@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using ProbabilityAnalyser.Core.Program.AcesUp;
 using ProbabilityAnalyser.Core.Program.AcesUp.Strategy;
 
-namespace ProbabilityAnalyser.UnitTests
+namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 {
 	[TestFixture]
 	public class AcesUpSpecification : SpecificationBase
 	{
-		protected readonly IList<Action<AcesUpRunContext>> Configurations 
+		protected readonly IList<Action<AcesUpRunContext>> Configurations
 			= new List<Action<AcesUpRunContext>>();
 
 
@@ -29,7 +28,7 @@ namespace ProbabilityAnalyser.UnitTests
 
 		protected virtual void given()
 		{
-			
+
 		}
 
 		protected virtual void when()

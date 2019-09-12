@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Text;
 using ProbabilityAnalyser.Core.Program.AcesUp;
-using static ProbabilityAnalyser.UnitTests.AcesUpTests;
 
-namespace ProbabilityAnalyser.UnitTests
+namespace ProbabilityAnalyser.UnitTests.AcesUpTests.Helpers
 {
 	public class AcesUpStrategyBuilder
 	{
@@ -51,9 +49,9 @@ namespace ProbabilityAnalyser.UnitTests
 					}
 
 
-					object[] args = new []{_strategy};
+					object[] args = new[] { _strategy };
 					var obj = Activator.CreateInstance(t, args);
-					_strategy = (ICardMovingStrategy) obj;
+					_strategy = (ICardMovingStrategy)obj;
 
 					var displayName = GetDisplayNameForInstance(_strategy);
 					_sb.Append($"{displayName}");
@@ -81,16 +79,16 @@ namespace ProbabilityAnalyser.UnitTests
 			return this;
 		}
 
-		public AcesUpArgCombination Peek()
+		public AcesUpTests.AcesUpArgCombination Peek()
 		{
-			var result = new AcesUpArgCombination();
+			var result = new AcesUpTests.AcesUpArgCombination();
 			result.Prioritizer = _prioritizer;
 			result.MovingStrategy = _strategy;
 			result.FriendlyName = GetGeneratedDisplayName();
 			return result;
 		}
 
-		public AcesUpArgCombination Build()
+		public AcesUpTests.AcesUpArgCombination Build()
 		{
 			var result = Peek();
 			Clear();

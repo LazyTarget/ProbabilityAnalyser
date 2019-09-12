@@ -1,18 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using NUnit.Framework;
-using ProbabilityAnalyser.Core.Models;
 using ProbabilityAnalyser.Core.Program.AcesUp;
 using ProbabilityAnalyser.Core.Program.AcesUp.Prioritizer;
 using ProbabilityAnalyser.Core.Program.AcesUp.Strategy;
-using static ProbabilityAnalyser.UnitTests.AcesUpTests;
+using ProbabilityAnalyser.UnitTests.AcesUpTests.Helpers;
 
-namespace ProbabilityAnalyser.UnitTests
+namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 {
 	[TestFixture]
 	public class AcesUpBestStrategyTests
@@ -25,12 +20,12 @@ namespace ProbabilityAnalyser.UnitTests
 			new GreatestTopCardPrioritizer(),
 			new LowestTopCardPrioritizer(),
 			new LargestPilePrioritizer(),
-			new SmallestPilePrioritizer(), 
-			new HasHiddenAcesPilePrioritizer(), 
-			new HasNoHiddenAcesPilePrioritizer(), 
+			new SmallestPilePrioritizer(),
+			new HasHiddenAcesPilePrioritizer(),
+			new HasNoHiddenAcesPilePrioritizer(),
 		};
 
-		protected virtual void AddCombination(List<AcesUpArgCombination> list, Action<AcesUpStrategyBuilder> build)
+		protected virtual void AddCombination(List<AcesUpTests.AcesUpArgCombination> list, Action<AcesUpStrategyBuilder> build)
 		{
 			var builder = new AcesUpStrategyBuilder();
 			build(builder);
@@ -38,7 +33,7 @@ namespace ProbabilityAnalyser.UnitTests
 			list.AddRange(l);
 		}
 
-		protected virtual IEnumerable<AcesUpArgCombination> BuildForAllPrioritizers(AcesUpStrategyBuilder builder)
+		protected virtual IEnumerable<AcesUpTests.AcesUpArgCombination> BuildForAllPrioritizers(AcesUpStrategyBuilder builder)
 		{
 			foreach (var prioritizer in _prioritizers)
 			{
@@ -49,9 +44,9 @@ namespace ProbabilityAnalyser.UnitTests
 			}
 		}
 
-		protected virtual IList<AcesUpArgCombination> FetchStrategyCombinations()
+		protected virtual IList<AcesUpTests.AcesUpArgCombination> FetchStrategyCombinations()
 		{
-			var combinations = new List<AcesUpArgCombination>();
+			var combinations = new List<AcesUpTests.AcesUpArgCombination>();
 
 
 			AddCombination(combinations, builder => builder
@@ -116,14 +111,14 @@ namespace ProbabilityAnalyser.UnitTests
 		[Test]
 		public void DetermineBestStrategy()
 		{
-			var instances = NR_OF_INSTANCES;
+			var instances = AcesUpTests.NR_OF_INSTANCES;
 			var combinations = FetchStrategyCombinations();
 
-			var results = new Dictionary<AcesUpArgCombination, int>();
+			var results = new Dictionary<AcesUpTests.AcesUpArgCombination, int>();
 			for (var i = 0; i < combinations.Count; i++)
 			{
 				var args = combinations.ElementAt(i);
-				var wins = ExecuteTest(c => args.ApplyTo(c), instances, PARALLEL_INSTANCES);
+				var wins = AcesUpTests.ExecuteTest(c => args.ApplyTo((AcesUpRunContext)c), instances, AcesUpTests.PARALLEL_INSTANCES);
 				results[args] = wins;
 			}
 
