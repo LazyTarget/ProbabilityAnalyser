@@ -45,7 +45,8 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 				When the game ends, the number of discarded cards is your score. The maximum score (and thus the score necessary to win) is 48, which means all cards have been discarded except for the four aces, thus the name of the game.
 			*/
 
-
+			var deckSize = context.Deck.Cards.Length;
+			var maxPoints = deckSize - 4;
 
 
 			int loops = 0;
@@ -60,8 +61,8 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 
 
 			// No more cards to deal to piles, GAMEOVER!
-			var points = 52 - context.FaceUpCards.Length;
-			if (points == 48)
+			var points = deckSize - context.FaceUpCards.Length;
+			if (points == maxPoints)
 			{
 				if (context.FaceUpCards.Top().Count(x => x.Rank == PlayingCardRank.Ace) == 4)
 					points = 100;

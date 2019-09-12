@@ -15,6 +15,14 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 		public bool UseParallelLoops { get; set; } = false;
 
 
+		public AcesUpRunner()
+		{
+			if (System.Diagnostics.Debugger.IsAttached)
+				LoopTimes = 1;
+			//Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
+		}
+
+
 		private AcesUpRunConfig Init()
 		{
 			var config = new AcesUpRunConfig();
@@ -60,7 +68,7 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 				configure(cfg, index);
 
 				var pts = InvokeProgram(cfg);
-				if (pts > 48)
+				if (pts == 100)
 					wins++;
 			};
 
@@ -122,6 +130,14 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 
 			var program = new AcesUp(output, logFormatter);
 			var pts = program.Run(ctx);
+
+
+			if (manyConfig == null || manyConfig.LoopTimes <= 1)
+			{
+				var msg = $"Points: {pts}";
+				msg = logFormatter?.Invoke(msg) ?? msg;
+				output?.WriteLine(msg);
+			}
 
 			return pts;
 		}
