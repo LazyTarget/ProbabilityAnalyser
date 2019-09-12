@@ -26,6 +26,8 @@ namespace ProbabilityAnalyser.UnitTests
 			new LowestTopCardPrioritizer(),
 			new LargestPilePrioritizer(),
 			new SmallestPilePrioritizer(), 
+			new HasHiddenAcesPilePrioritizer(), 
+			new HasNoHiddenAcesPilePrioritizer(), 
 		};
 
 		protected virtual void AddCombination(List<AcesUpArgCombination> list, Action<AcesUpStrategyBuilder> build)
@@ -57,7 +59,11 @@ namespace ProbabilityAnalyser.UnitTests
 			);
 
 			AddCombination(combinations, builder => builder
-				.AppendStrategy<MoveFirstAvailableCardToEmptySpace>()
+				.AppendStrategy<MoveCardBasedOnDirectlyUnderTopCard>()
+			);
+
+			AddCombination(combinations, builder => builder
+				.AppendStrategy<AcesToEmptyPiles>()
 			);
 
 			AddCombination(combinations, builder => builder
@@ -110,18 +116,19 @@ namespace ProbabilityAnalyser.UnitTests
 		[Test]
 		public void DetermineBestStrategy()
 		{
+			var instances = NR_OF_INSTANCES;
 			var combinations = FetchStrategyCombinations();
 
 			var results = new Dictionary<AcesUpArgCombination, int>();
 			for (var i = 0; i < combinations.Count; i++)
 			{
 				var args = combinations.ElementAt(i);
-				var wins = ExecuteTest(c => args.ApplyTo(c), NR_OF_INSTANCES, PARALLEL_INSTANCES);
+				var wins = ExecuteTest(c => args.ApplyTo(c), instances, PARALLEL_INSTANCES);
 				results[args] = wins;
 			}
 
 
-			Console.WriteLine($"Out of {NR_OF_INSTANCES} instances, the following {results.Count} strategy combinations where run:");
+			Console.WriteLine($"Out of {instances} instances, the following {results.Count} strategy combinations where run:");
 
 			var sorted = results.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
 			for (var i = 0; i < sorted.Count; i++)
@@ -129,7 +136,7 @@ namespace ProbabilityAnalyser.UnitTests
 				var pair = sorted.ElementAt(i);
 				var args = pair.Key;
 				var wins = pair.Value;
-				Console.WriteLine($"{wins} wins\t :: {(wins / (double)NR_OF_INSTANCES):P2}\t\t Strategy: {args.FriendlyName}");
+				Console.WriteLine($"{wins} wins\t :: {(wins / (double)instances):P2}\t\t Strategy: {args.FriendlyName}");
 			}
 		}
 	}
