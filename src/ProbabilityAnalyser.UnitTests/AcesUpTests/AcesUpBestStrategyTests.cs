@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using ProbabilityAnalyser.Core.Models;
 using ProbabilityAnalyser.Core.Program.AcesUp;
 using ProbabilityAnalyser.Core.Program.AcesUp.Prioritizer;
 using ProbabilityAnalyser.Core.Program.AcesUp.Strategy;
@@ -111,14 +112,24 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 		[Test]
 		public void DetermineBestStrategy()
 		{
-			var instances = AcesUpTests.NR_OF_INSTANCES;
+			var instances = 1000; //AcesUpTests.NR_OF_INSTANCES;
 			var combinations = FetchStrategyCombinations();
 
 			var results = new Dictionary<AcesUpTests.AcesUpArgCombination, int>();
 			for (var i = 0; i < combinations.Count; i++)
 			{
 				var args = combinations.ElementAt(i);
-				var wins = AcesUpTests.ExecuteTest(c => args.ApplyTo((AcesUpRunContext)c), instances, AcesUpTests.PARALLEL_INSTANCES);
+
+				var runner = new AcesUpRunner();
+				runner.LoopTimes = instances;
+				runner.UseParallelLoops = AcesUpTests.PARALLEL_INSTANCES;
+
+				var wins = runner.RunMany((c, idx) =>
+				{
+					//c.GetDeck = AcesUpSpecificGameTests.GetDeck2;
+				});
+				//var wins = AcesUpTests.ExecuteTest(c => args.ApplyTo((AcesUpRunContext)c), instances, AcesUpTests.PARALLEL_INSTANCES);
+
 				results[args] = wins;
 			}
 
