@@ -41,9 +41,11 @@ namespace ProbabilityAnalyser.Core.Models
 			}
 		}
 
-		public static PlayingCardDeck Standard52CardDeck()
+		public static PlayingCardDeck Standard52CardDeck(bool shuffle = true)
 		{
 			var deck = new PlayingCardDeck(_standard52CardDeck.ToArray());
+			if (shuffle)
+				deck.Shuffle();
 			return deck;
 		}
 

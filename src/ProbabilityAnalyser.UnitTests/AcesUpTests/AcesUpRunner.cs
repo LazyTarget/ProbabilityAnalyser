@@ -140,7 +140,8 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 	{
 		public AcesUpRunConfig()
 		{
-			GetDeck = PlayingCardDeck.Standard52CardDeck;
+			var deck = PlayingCardDeck.Standard52CardDeck(shuffle: true);
+			GetDeck = () => deck;
 		}
 
 		public Func<PlayingCardDeck> GetDeck;
