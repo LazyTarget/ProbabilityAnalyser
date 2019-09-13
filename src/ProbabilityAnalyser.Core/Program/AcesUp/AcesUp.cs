@@ -8,7 +8,7 @@ using ProbabilityAnalyser.Core.Models;
 
 namespace ProbabilityAnalyser.Core.Program.AcesUp
 {
-	public class AcesUp
+	public class AcesUp : IAcesUp
 	{
 		private readonly TextWriter _output;
 		private readonly Func<string, string> _logFormatter;
