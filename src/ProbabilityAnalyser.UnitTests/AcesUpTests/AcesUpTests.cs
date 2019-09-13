@@ -12,7 +12,7 @@ using ProbabilityAnalyser.Core.Program.AcesUp.Strategy;
 namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 {
 	[TestFixture]
-	public class AcesUpTests
+	public class AcesUpTests : TestBase
 	{
 		static AcesUpTests()
 		{

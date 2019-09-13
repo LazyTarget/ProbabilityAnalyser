@@ -12,7 +12,7 @@ using ProbabilityAnalyser.UnitTests.AcesUpTests.Helpers;
 namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 {
 	[TestFixture]
-	public class AcesUpBestStrategyTests
+	public class AcesUpBestStrategyTests : TestBase
 	{
 		#region Combinations
 

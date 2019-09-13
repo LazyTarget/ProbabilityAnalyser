@@ -15,7 +15,7 @@ using ProbabilityAnalyser.Core.Program.AcesUp;
 namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 {
 	[TestFixture]
-	public class AcesUpSpecificGameTests
+	public class AcesUpSpecificGameTests : TestBase
 	{
 		public static PlayingCardDeck GetDeck1()
 		{

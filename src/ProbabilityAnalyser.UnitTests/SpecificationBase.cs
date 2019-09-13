@@ -6,25 +6,7 @@ using NUnit.Framework;
 namespace ProbabilityAnalyser.UnitTests
 {
 	[TestFixture]
-	public class SpecificationBase
+	public class SpecificationBase : TestBase
 	{
-		[OneTimeSetUp]
-		protected virtual void Init()
-		{
-
-		}
-
-		[SetUp]
-		protected virtual void Setup()
-		{
-
-		}
-
-		[TearDown]
-		protected virtual void Cleanup()
-		{
-
-		}
-
 	}
 }
