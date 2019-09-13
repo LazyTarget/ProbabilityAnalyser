@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ProbabilityAnalyser.Core.Extensions;
 using ProbabilityAnalyser.Core.Models;
 using ProbabilityAnalyser.Core.Program.AcesUp;
 
@@ -23,13 +24,13 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 		}
 
 
-		private AcesUpRunConfig Init()
+		protected virtual AcesUpRunConfig Init()
 		{
 			var config = new AcesUpRunConfig();
 			return config;
 		}
 
-		private AcesUpRunManyConfig InitMany(int index, int times, bool parallel)
+		protected virtual AcesUpRunManyConfig InitMany(int index, int times, bool parallel)
 		{
 			var config = new AcesUpRunManyConfig
 			{
@@ -42,7 +43,7 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 
 
 
-		public int Run(Action<AcesUpRunConfig> configure)
+		public virtual int Run(Action<AcesUpRunConfig> configure)
 		{
 			var cfg = Init();
 			configure(cfg);
@@ -51,7 +52,7 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 			return pts;
 		}
 
-		public int RunMany(Action<AcesUpRunConfig, int> configure, int? times = null, bool? parallel = null)
+		public virtual int RunMany(Action<AcesUpRunConfig, int> configure, int? times = null, bool? parallel = null)
 		{
 			if (!times.HasValue || times < 1)
 				times = LoopTimes;
@@ -78,26 +79,15 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 		}
 
 
-		private ParallelLoopResult? InvokeLoop(bool parallel, int times, Action<int, ParallelLoopState> loop)
+		protected virtual ParallelLoopResult? InvokeLoop(bool parallel, int times, Action<int, ParallelLoopState> loop)
 		{
-			ParallelLoopResult? result = null;
-			if (parallel)
-			{
-				result = Parallel.For(0, times, loop);
-			}
-			else
-			{
-				for (var i = 0; i < times; i++)
-				{
-					loop(i, null);
-				}
-			}
+			var result = CommonExtensions.InvokeLoop(parallel, times, loop);
 			return result;
 		}
 
 
 
-		private int InvokeProgram(AcesUpRunConfig config)
+		protected virtual int InvokeProgram(AcesUpRunConfig config)
 		{
 			var deck = config.GetDeck();
 			var cancellationToken = CancellationToken.None;
