@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using ProbabilityAnalyser.Core.Extensions;
 using ProbabilityAnalyser.Core.Models;
 using ProbabilityAnalyser.Core.Program.AcesUp;
 using ProbabilityAnalyser.Core.Program.AcesUp.Prioritizer;
@@ -115,6 +116,14 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 			var instances = 1000; //AcesUpTests.NR_OF_INSTANCES;
 			var combinations = FetchStrategyCombinations();
 
+			var decks = new PlayingCardDeck[instances];
+			CommonExtensions.InvokeLoop(true, instances, (i, s) =>
+			{
+				var deck = PlayingCardDeck.Standard52CardDeck();
+				decks[i] = deck;
+			});
+
+
 			var results = new Dictionary<AcesUpTests.AcesUpArgCombination, int>();
 			for (var i = 0; i < combinations.Count; i++)
 			{
@@ -126,7 +135,7 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 
 				var wins = runner.RunMany((c, idx) =>
 				{
-					//c.GetDeck = AcesUpSpecificGameTests.GetDeck2;
+					c.GetDeck = () => new PlayingCardDeck(decks[idx].Cards);
 				});
 				//var wins = AcesUpTests.ExecuteTest(c => args.ApplyTo((AcesUpRunContext)c), instances, AcesUpTests.PARALLEL_INSTANCES);
 
