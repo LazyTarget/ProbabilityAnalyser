@@ -21,7 +21,7 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 		}
 
 		public PlayingCardDeck Deck { get; }
-		public AcesUpFaceUpCards FaceUpCards { get; }
+		public AcesUpFaceUpCards FaceUpCards { get; set; }
 		public CancellationToken Token { get; }
 		public bool HardMode { get; set; }
 

@@ -9,7 +9,7 @@ using ProbabilityAnalyser.Core.Models;
 
 namespace ProbabilityAnalyser.Core.Program.AcesUp
 {
-	public class AcesUpOld
+	public class AcesUpOld : IAcesUp
 	{
 		private readonly TextWriter _output;
 		private readonly Func<string, string> _logFormatter;
@@ -30,6 +30,17 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 			var context = new AcesUpRunContext(deck, cancellationToken);
 			var result = Run(context);
 			return result;
+		}
+
+
+		public int Run(Program.AcesUp.AcesUpRunContext context)
+		{
+			var ctx = new AcesUpRunContext(context.Deck, context.Token, context.HardMode);
+			ctx.FaceUpCards = context.FaceUpCards;
+			ctx.MovingStrategy = context.MovingStrategy;
+
+			var pts = Run(ctx);
+			return pts;
 		}
 
 		public int Run(AcesUpRunContext context)
@@ -61,10 +72,10 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 
 
 			// No more cards to deal to piles, GAMEOVER!
-			var points = 52 - context.FaceUpCards.Length;
+			var points = 52 - context.FaceUpCards2.Length;
 			if (points == 48)
 			{
-				if (context.FaceUpCards.Top().Count(x => x.Rank == PlayingCardRank.Ace) == 4)
+				if (context.FaceUpCards2.Top().Count(x => x.Rank == PlayingCardRank.Ace) == 4)
 					points = 100;
 			}
 
@@ -78,25 +89,25 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 
 			var str = "";
 
-			var card = context.FaceUpCards.Pile1.LastOrDefault();
+			var card = context.FaceUpCards2.Pile1.LastOrDefault();
 			if (card != null)
 				str += $"{card?.ToShortString()} ";
 			else
 				str += $"    ";
 
-			card = context.FaceUpCards.Pile2.LastOrDefault();
+			card = context.FaceUpCards2.Pile2.LastOrDefault();
 			if (card != null)
 				str += $"{card?.ToShortString()} ";
 			else
 				str += $"    ";
 
-			card = context.FaceUpCards.Pile3.LastOrDefault();
+			card = context.FaceUpCards2.Pile3.LastOrDefault();
 			if (card != null)
 				str += $"{card?.ToShortString()} ";
 			else
 				str += $"    ";
 
-			card = context.FaceUpCards.Pile4.LastOrDefault();
+			card = context.FaceUpCards2.Pile4.LastOrDefault();
 			if (card != null)
 				str += $"{card?.ToShortString()} ";
 			else
@@ -142,7 +153,7 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 		private bool CheckAndDiscardSuits(AcesUpRunContext context)
 		{
 			var discarded = false;
-			var top = context.FaceUpCards.Top().ToArray();
+			var top = context.FaceUpCards2.Top().ToArray();
 
 			// 2. If there are two or more cards of the same suit, discard all but the highest-ranked card of that suit. Aces rank high.
 			var groupBySuits = top.GroupBy(x => x.Suit);
@@ -157,7 +168,7 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 					var removed = group
 						.Where(c => c.Suit == suit)
 						.Where(c => c != remainingCard)
-						.Count(c => context.FaceUpCards.Discard(c));
+						.Count(c => context.FaceUpCards2.Discard(c));
 
 					if (removed > 0)
 					{
@@ -182,13 +193,13 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 
 		private bool MoveCardsIfHasEmptySpaces(AcesUpRunContext context)
 		{
-			if (context.FaceUpCards.Top().Count() >= 4)
+			if (context.FaceUpCards2.Top().Count() >= 4)
 			{
 				// No empty pile to move to...
 				return false;
 			}
 
-			ICardMovingStrategy movingStrategy = context.MovingStrategy;
+			ICardMovingStrategy movingStrategy = context.MovingStrategy2;
 			if (movingStrategy == null)
 			{
 				throw new NullReferenceException($"Invalid moving strategy!");
@@ -205,7 +216,7 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 					PrintContext(context, "moved");
 				}
 
-			} while (moved && context.FaceUpCards.Top().Count() < 4);
+			} while (moved && context.FaceUpCards2.Top().Count() < 4);
 
 			return changed;
 		}
@@ -232,7 +243,7 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 		{
 			// 1 & 5
 			var cards = context.Deck.DrawMany(4);
-			context.FaceUpCards.AppendCardsToPiles(cards);
+			context.FaceUpCards2.AppendCardsToPiles(cards);
 
 
 			PrintContext(context, "deal");
@@ -241,25 +252,16 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 		}
 
 
-		public class AcesUpRunContext
+		public class AcesUpRunContext : ProbabilityAnalyser.Core.Program.AcesUp.AcesUpRunContext
 		{
 			public AcesUpRunContext(PlayingCardDeck deck, CancellationToken cancellationToken, bool hardMode = false)
+				: base(deck, cancellationToken, hardMode)
 			{
-				Deck = deck;
-				Token = cancellationToken;
-				HardMode = hardMode;
-				MovingStrategy =
-					new MoveCardBasedOnDirectlyUnderTopCard(
-						new MoveFirstAvailableCardToEmptySpace()
-					);
 			}
 
-			public PlayingCardDeck Deck { get; }
-			public AcesUpFaceUpCards FaceUpCards { get; } = new AcesUpFaceUpCards();
-			public CancellationToken Token { get; }
-			public bool HardMode { get; set; }
+			public AcesUpFaceUpCards FaceUpCards2 { get; } = new AcesUpFaceUpCards();
 
-			public ICardMovingStrategy MovingStrategy;
+			public ICardMovingStrategy MovingStrategy2;
 		}
 
 		public class AcesUpFaceUpCards
@@ -391,7 +393,7 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 				PlayingCard peek;
 				PlayingCard card;
 				var hardMode = context.HardMode;
-				var cards = context.FaceUpCards;
+				var cards = context.FaceUpCards2;
 
 				// Get card...;
 				if (cards.Pile1.Length > 1 && (peek = TryPopCardFromPile(ref cards.Pile1, hardMode)) != null)
@@ -421,7 +423,7 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 				}
 
 				// Move card...
-				moved = context.FaceUpCards.AppendOneToEmptyPile(card);
+				moved = context.FaceUpCards2.AppendOneToEmptyPile(card);
 				if (!moved)
 				{
 					throw new Exception($"Card was popped from a Pile but could not be Appended to an empty pile!");
@@ -445,7 +447,7 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 			{
 				// todo: Implement "AI" which remembers the card under the Top card(s), for better 'moving-strategy'
 
-				var top = context.FaceUpCards.Top().ToArray();
+				var top = context.FaceUpCards2.Top().ToArray();
 				if (top.Length >= 4)
 					return false;       // no change
 
@@ -455,7 +457,7 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 				PlayingCard card;
 				PlayingCard peek;
 				var hardMode = context.HardMode;
-				var cards = context.FaceUpCards;
+				var cards = context.FaceUpCards2;
 
 				if (cards.Pile1.Length > 1 && (peek = cards.Pile1.Reverse().ElementAtOrDefault(1)) != null && suitsOnTop.Contains(peek.Suit) &&
 					(peek = TryPopCardFromPile(ref cards.Pile1, hardMode)) != null)
@@ -486,7 +488,7 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 				}
 
 				// Move card...
-				moved = context.FaceUpCards.AppendOneToEmptyPile(card);
+				moved = context.FaceUpCards2.AppendOneToEmptyPile(card);
 				if (!moved)
 				{
 					throw new Exception($"Card was popped from a Pile but could not be Appended to an empty pile!");
@@ -508,7 +510,7 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 
 			public virtual bool MoveCard(AcesUpRunContext context)
 			{
-				var top = context.FaceUpCards.Top().ToArray();
+				var top = context.FaceUpCards2.Top().ToArray();
 				if (top.Length >= 4)
 					return false;       // has no empty piles...
 
@@ -516,7 +518,7 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 				PlayingCard peek;
 				PlayingCard card;
 				var hardMode = context.HardMode;
-				var cards = context.FaceUpCards;
+				var cards = context.FaceUpCards2;
 
 				// Get card...;
 				if (cards.Pile1.Length > 1 && (peek = cards.Pile1.Last()) != null && peek.Rank == PlayingCardRank.Ace &&
@@ -550,7 +552,7 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp
 				}
 
 				// Move card...
-				moved = context.FaceUpCards.AppendOneToEmptyPile(card);
+				moved = context.FaceUpCards2.AppendOneToEmptyPile(card);
 				if (!moved)
 				{
 					throw new Exception($"Card was popped from a Pile but could not be Appended to an empty pile!");
