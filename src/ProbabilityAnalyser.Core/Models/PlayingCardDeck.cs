@@ -41,9 +41,11 @@ namespace ProbabilityAnalyser.Core.Models
 			}
 		}
 
-		public static PlayingCardDeck Standard52CardDeck()
+		public static PlayingCardDeck Standard52CardDeck(bool shuffle = true)
 		{
 			var deck = new PlayingCardDeck(_standard52CardDeck.ToArray());
+			if (shuffle)
+				deck.Shuffle();
 			return deck;
 		}
 
@@ -75,13 +77,13 @@ namespace ProbabilityAnalyser.Core.Models
 			}
 			else
 			{
-				//var index = Cards.Length - 1;
-				//card = Cards[index];
-				//var cards = Cards.Take(index).ToArray();
-				//Cards = cards;
-
-				var cards = Cards.PopTopCard(out card);
+				var index = Cards.Length - 1;
+				card = Cards[index];
+				var cards = Cards.Take(index).ToArray();
 				Cards = cards;
+
+				//var cards = Cards.PopTopCard(out card);
+				//Cards = cards;
 			}
 			return card;
 		}

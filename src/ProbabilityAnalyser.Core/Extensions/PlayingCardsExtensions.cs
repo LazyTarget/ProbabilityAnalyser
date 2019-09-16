@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ProbabilityAnalyser.Core.Models;
+using ProbabilityAnalyser.Core.Program.AcesUp;
 
 namespace ProbabilityAnalyser.Core.Extensions
 {
@@ -131,19 +132,34 @@ namespace ProbabilityAnalyser.Core.Extensions
 		}
 
 
-		public static PlayingCard[] PopTopCard(this PlayingCard[] cards)
+		public static IEnumerable<AcesUpPile> Piles(this AcesUpFaceUpCards cards)
 		{
-			PlayingCard card;
-			var result = PopTopCard(cards, out card);
-			return result;
+			yield return cards.Pile1;
+			yield return cards.Pile2;
+			yield return cards.Pile3;
+			yield return cards.Pile4;
 		}
 
-		public static PlayingCard[] PopTopCard(this PlayingCard[] cards, out PlayingCard card)
+		public static void PopTopCard(this AcesUpPile pile)
 		{
+			PlayingCard card;
+			PopTopCard(pile, out card);
+		}
+
+		public static void PopTopCard(this AcesUpPile pile, out PlayingCard card)
+		{
+			var cards = pile.Pile;
 			var index = cards.Length - 1;
 			card = cards[index];
 			var result = cards.Take(index).ToArray();
-			return result;
+			pile.Pile = result;
+		}
+
+		public static void AppendCard(this AcesUpPile pile, PlayingCard card)
+		{
+			var cards = pile.Pile;
+			var result = cards.Concat(new[] { card }).ToArray();
+			pile.Pile = result;
 		}
 	}
 }
