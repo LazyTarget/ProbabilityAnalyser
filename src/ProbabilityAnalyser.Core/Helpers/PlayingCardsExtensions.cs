@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ProbabilityAnalyser.Core.Intefaces;
 using ProbabilityAnalyser.Core.Models;
 using ProbabilityAnalyser.Core.Program.AcesUp;
 
@@ -161,5 +162,29 @@ namespace ProbabilityAnalyser.Core.Extensions
 			var result = cards.Concat(new[] { card }).ToArray();
 			pile.Pile = result;
 		}
+
+
+		public static PlayingCard Hearts(this IPlayingCardBuilder pcb, PlayingCardRank rank)
+		{
+			var card = pcb.Hearts().Rank(rank);
+			return card;
+		}
+
+		public static PlayingCard Diamonds(this IPlayingCardBuilder pcb, PlayingCardRank rank)
+		{
+			var card = pcb.Diamonds().Rank(rank);
+			return card;
+		}
+		public static PlayingCard Spades(this IPlayingCardBuilder pcb, PlayingCardRank rank)
+		{
+			var card = pcb.Spades().Rank(rank);
+			return card;
+		}
+		public static PlayingCard Clubs(this IPlayingCardBuilder pcb, PlayingCardRank rank)
+		{
+			var card = pcb.Clubs().Rank(rank);
+			return card;
+		}
+
 	}
 }

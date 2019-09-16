@@ -10,7 +10,7 @@ namespace ProbabilityAnalyser.Core.Intefaces
 		ISuitedPlayingCardBuilder Clubs();
 		ISuitedPlayingCardBuilder Spades();
 		ISuitedPlayingCardBuilder Diamonds();
-		ISuitedPlayingCardBuilder Heart();
+		ISuitedPlayingCardBuilder Hearts();
 		PlayingCard Joker();
 	}
 

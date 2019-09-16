@@ -45,7 +45,7 @@ namespace ProbabilityAnalyser.Core.Helpers
 			return this;
 		}
 
-		public ISuitedPlayingCardBuilder Heart()
+		public ISuitedPlayingCardBuilder Hearts()
 		{
 			_suit = PlayingCardSuit.Hearts;
 			return this;
