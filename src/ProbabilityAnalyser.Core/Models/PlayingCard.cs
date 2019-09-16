@@ -34,11 +34,13 @@ namespace ProbabilityAnalyser.Core.Models
 			else if (Suit != PlayingCardSuit.None &&
 			         Rank != PlayingCardRank.None)
 			{
-				var s = Suit.ToFriendlyString();
-				var r = Rank.ToFriendlyString();
+				//var s = Suit.ToFriendlyString();
+				//var r = Rank.ToFriendlyString();
 
-				//str = $"{Rank} {Suit}";
-				str = $"{r} of {s}";
+				////str = $"{Rank} {Suit}";
+				//str = $"{r} of {s}";
+
+				str = this.ToShortString();
 			}
 			else
 			{
