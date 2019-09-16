@@ -136,6 +136,7 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 				var wins = runner.RunMany((c, idx) =>
 				{
 					c.GetDeck = () => new PlayingCardDeck(decks[idx].Cards);
+					c.ConfigureArguments = (ctx) => args.ApplyTo(ctx);
 				});
 				//var wins = AcesUpTests.ExecuteTest(c => args.ApplyTo((AcesUpRunContext)c), instances, AcesUpTests.PARALLEL_INSTANCES);
 
