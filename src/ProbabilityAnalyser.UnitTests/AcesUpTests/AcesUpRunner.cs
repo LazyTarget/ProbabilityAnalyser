@@ -117,6 +117,10 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 
 
 			var ctx = new AcesUpRunContext(deck, cancellationToken, hardMode);
+			if (config.ConfigureArguments != null)
+			{
+				config.ConfigureArguments(ctx);
+			}
 
 			IAcesUp program;
 			if (config.UseObsolete)
@@ -150,6 +154,7 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 		}
 
 		public Func<PlayingCardDeck> GetDeck;
+		public Action<AcesUpRunContext> ConfigureArguments;
 		public Action<string> Console;
 		public Action<string> Debug;
 

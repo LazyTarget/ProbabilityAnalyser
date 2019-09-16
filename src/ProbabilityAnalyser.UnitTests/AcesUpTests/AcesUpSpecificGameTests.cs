@@ -10,6 +10,7 @@ using NUnit.Framework;
 using NUnit.Framework.Internal;
 using ProbabilityAnalyser.Core.Models;
 using ProbabilityAnalyser.Core.Program.AcesUp;
+using ProbabilityAnalyser.Core.Program.AcesUp.Strategy;
 //using static ProbabilityAnalyser.UnitTests.AcesUpTests.AcesUpTests;
 
 namespace ProbabilityAnalyser.UnitTests.AcesUpTests
@@ -78,6 +79,11 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 			var wins = runner.RunMany((c, i) =>
 			{
 				c.GetDeck = GetDeck1;
+				c.ConfigureArguments = (ctx) =>
+				{
+					ctx.MovingStrategy = new MoveCardBasedOnDirectlyUnderTopCard(
+						new MoveFirstAvailableCardToEmptySpace());
+				};
 			});
 
 			Console.WriteLine($"{wins} wins out of {runner.LoopTimes} == {(wins / runner.LoopTimes):P4}");
