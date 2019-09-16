@@ -45,7 +45,7 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests.Helpers
 
 					if (_strategy != null)
 					{
-						_sb.Insert(0, "   <   ");
+						_sb.Insert(0, "   -->   ");
 					}
 
 

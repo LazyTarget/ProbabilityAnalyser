@@ -200,6 +200,7 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 				c.ConfigureArguments = (ctx) => combo.ApplyTo(ctx);
 			});
 
+			Console.WriteLine($"Out of {instances} instances:");
 			Console.WriteLine($"{wins} wins\t :: {(wins / (double)instances):P2}\t\t Strategy: {combo.FriendlyName}");
 		}
 	}
