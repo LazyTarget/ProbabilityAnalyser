@@ -158,7 +158,7 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 		public Action<string> Console;
 		public Action<string> Debug;
 
-		public bool UseObsolete = true;
+		public bool UseObsolete;
 	}
 
 	public class AcesUpRunManyConfig : AcesUpRunConfig
