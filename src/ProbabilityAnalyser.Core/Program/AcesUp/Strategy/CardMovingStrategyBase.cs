@@ -41,7 +41,7 @@ namespace ProbabilityAnalyser.Core.Program.AcesUp.Strategy
 			if (top.Length >= 4)
 				return false;       // has no empty piles...
 
-			if (context.FaceUpCards.Length <= 4)
+			if (context.FaceUpCards.Piles().All(p => p.Length < 2))
 				return false;       // has no pile with more than 1 card
 
 

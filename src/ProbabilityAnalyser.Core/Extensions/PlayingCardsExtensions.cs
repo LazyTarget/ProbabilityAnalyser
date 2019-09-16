@@ -132,6 +132,14 @@ namespace ProbabilityAnalyser.Core.Extensions
 		}
 
 
+		public static IEnumerable<AcesUpPile> Piles(this AcesUpFaceUpCards cards)
+		{
+			yield return cards.Pile1;
+			yield return cards.Pile2;
+			yield return cards.Pile3;
+			yield return cards.Pile4;
+		}
+
 		public static void PopTopCard(this AcesUpPile pile)
 		{
 			PlayingCard card;
