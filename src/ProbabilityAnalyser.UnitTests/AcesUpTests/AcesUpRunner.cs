@@ -118,7 +118,12 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 
 			var ctx = new AcesUpRunContext(deck, cancellationToken, hardMode);
 
-			var program = new AcesUp(output, logFormatter);
+			IAcesUp program;
+			if (config.UseObsolete)
+				program = new AcesUpOld(output, logFormatter);
+			else
+				program = new AcesUp(output, logFormatter);
+
 			var pts = program.Run(ctx);
 
 
@@ -147,6 +152,8 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 		public Func<PlayingCardDeck> GetDeck;
 		public Action<string> Console;
 		public Action<string> Debug;
+
+		public bool UseObsolete = true;
 	}
 
 	public class AcesUpRunManyConfig : AcesUpRunConfig
