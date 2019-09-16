@@ -21,10 +21,12 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 		[Test]
 		public void Test()
 		{
-			var times = 10;
+			double times = 100;
 			Func<string, string> logFormatter = null;
 
-			int oldBetter = 0;
+			double oldBetter = 0;
+			double oldWins = 0;
+			double newWins = 0;
 			Action<int, ParallelLoopState> loop;
 			loop = (i, p) =>
 			{
@@ -51,10 +53,15 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 
 				var newPts = acesUp.Run(newCtx);
 
-				if (oldPts > newPts)
+				//var logDetails = oldPts > newPts;
+				var logDetails = oldPts == 100;
+				if (logDetails)
 				{
+					oldWins++;
+
 					// Old gave better results...
-					oldBetter++;
+					if (oldPts > newPts)
+						oldBetter++;
 
 					Console.WriteLine();
 					Console.WriteLine();
@@ -77,12 +84,23 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 
 					Console.WriteLine("--- --- --- ---");
 				}
+				else if (newPts == 100)
+				{
+					newWins++;
+					Console.WriteLine("New won but Old didn't!");
+				}
 			};
 
-			CommonExtensions.InvokeLoop(false, times, loop);
+			CommonExtensions.InvokeLoop(false, (int)times, loop);
 
 
+			Console.WriteLine($"Old {oldWins} wins times; {(oldWins / times):P2}");
 			Console.WriteLine($"Old was better {oldBetter} times; {(oldBetter / times):P2}");
+
+			Console.WriteLine($"New {newWins} wins times; {(newWins / times):P2}");
+
+			if (oldWins <= 0)
+				Assert.Inconclusive($"Old gave no wins, so cannot compare strategies");
 
 			Assert.AreEqual(0, oldBetter, $"Old program gave better results {oldBetter} times, should be 0 times");
 		}
