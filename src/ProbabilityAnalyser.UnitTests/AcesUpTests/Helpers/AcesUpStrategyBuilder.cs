@@ -45,7 +45,7 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests.Helpers
 
 					if (_strategy != null)
 					{
-						_sb.Append(" > ");
+						_sb.Insert(0, "   <   ");
 					}
 
 
@@ -54,7 +54,7 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests.Helpers
 					_strategy = (ICardMovingStrategy)obj;
 
 					var displayName = GetDisplayNameForInstance(_strategy);
-					_sb.Append($"{displayName}");
+					_sb.Insert(0, $"{displayName}");
 				}
 			}
 			return this;

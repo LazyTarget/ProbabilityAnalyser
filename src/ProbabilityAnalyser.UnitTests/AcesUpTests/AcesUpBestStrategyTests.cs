@@ -76,6 +76,26 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 			AddCombination(combinations, builder => builder
 				.AppendStrategy<AcesToEmptyPiles>()
 				.AppendStrategy<MoveFirstAvailableCardToEmptySpace>()
+			);
+
+			AddCombination(combinations, builder => builder
+				.AppendStrategy<AcesToEmptyPiles>()
+				.AppendStrategy<MoveCardBasedOnDirectlyUnderTopCard>()
+			);
+
+			AddCombination(combinations, builder => builder
+				.AppendStrategy<MoveFirstAvailableCardToEmptySpace>()
+				.AppendStrategy<AcesToEmptyPiles>()
+			);
+
+			AddCombination(combinations, builder => builder
+				.AppendStrategy<MoveCardBasedOnDirectlyUnderTopCard>()
+				.AppendStrategy<AcesToEmptyPiles>()
+			);
+
+			AddCombination(combinations, builder => builder
+				.AppendStrategy<AcesToEmptyPiles>()
+				.AppendStrategy<MoveFirstAvailableCardToEmptySpace>()
 				.AppendStrategy<MoveCardBasedOnDirectlyUnderTopCard>()
 			);
 
@@ -154,6 +174,33 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 				var wins = pair.Value;
 				Console.WriteLine($"{wins} wins\t :: {(wins / (double)instances):P2}\t\t Strategy: {args.FriendlyName}");
 			}
+		}
+
+
+		[Test]
+		public void TestStrategy()
+		{
+			var instances = 1000; //AcesUpTests.NR_OF_INSTANCES;
+
+			var deck = PlayingCardDeck.Standard52CardDeck();
+			
+			var builder = new AcesUpStrategyBuilder()
+				.AppendStrategy<MoveFirstAvailableCardToEmptySpace>()
+				.AppendStrategy<MoveCardBasedOnDirectlyUnderTopCard>()
+				.AppendStrategy<AcesToEmptyPiles>()
+				.Prioritizer<DefaultPilePrioritizer>();
+			var combo = builder.Build();
+
+			var runner = new AcesUpRunner();
+			runner.LoopTimes = instances;
+			runner.UseParallelLoops = AcesUpTests.PARALLEL_INSTANCES;
+			var wins = runner.RunMany((c, idx) =>
+			{
+				c.GetDeck = () => new PlayingCardDeck(deck.Cards);
+				c.ConfigureArguments = (ctx) => combo.ApplyTo(ctx);
+			});
+
+			Console.WriteLine($"{wins} wins\t :: {(wins / (double)instances):P2}\t\t Strategy: {combo.FriendlyName}");
 		}
 	}
 }
