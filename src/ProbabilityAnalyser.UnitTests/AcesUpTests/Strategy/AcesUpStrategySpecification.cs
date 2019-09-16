@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using NUnit.Framework;
+using ProbabilityAnalyser.Core.Extensions;
 using ProbabilityAnalyser.Core.Models;
 using ProbabilityAnalyser.Core.Program.AcesUp;
 using ProbabilityAnalyser.Core.Program.AcesUp.Strategy;
@@ -10,7 +11,7 @@ using ProbabilityAnalyser.Core.Program.AcesUp.Strategy;
 namespace ProbabilityAnalyser.UnitTests.AcesUpTests.Strategy
 {
 	[TestFixture]
-	public class AcesUpStrategySpecification : SpecificationBase
+	public abstract class AcesUpStrategySpecification : SpecificationBase
 	{
 		protected AcesUpRunContext Context;
 		protected ICardMovingStrategy MovingStrategy;
@@ -23,22 +24,10 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests.Strategy
 			when();
 		}
 
-		protected virtual void SetupFaceUpCards(AcesUpFaceUpCards cards)
-		{
-			cards.Pile1.Pile = new PlayingCard[] { new PlayingCard(PlayingCardSuit.Clubs, PlayingCardRank.Five)};
-			cards.Pile2.Pile = new PlayingCard[0];
-			cards.Pile3.Pile = new PlayingCard[] { new PlayingCard(PlayingCardSuit.Hearts, PlayingCardRank.Ace), };
-			cards.Pile4.Pile = new PlayingCard[] { new PlayingCard(PlayingCardSuit.Hearts, PlayingCardRank.Four), new PlayingCard(PlayingCardSuit.Clubs, PlayingCardRank.Three),  };
-
-			// ♧5      ♡A  ♡4
-			//             ♧A
-		}
-
 		protected virtual void given()
 		{
 			var deck = new PlayingCardDeck(new PlayingCard[0]);
 			Context = new AcesUpRunContext(deck, CancellationToken.None);
-			SetupFaceUpCards(Context.FaceUpCards);
 		}
 
 		protected virtual void when()
@@ -59,49 +48,14 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests.Strategy
 		{
 			if (expected == null)
 			{
-				Assert.IsNull(actual);
+				Assert.IsNull(actual, $"Expected empty pile, card was: {actual}");
 				return;
 			}
 			else
-				Assert.IsNotNull(actual);
+				Assert.IsNotNull(actual, $"Expected NON-empty pile");
 
-			Assert.AreEqual(expected.Suit, actual.Suit);
-			Assert.AreEqual(expected.Rank, actual.Rank);
-		}
-
-
-		public class strategy_is_move_first_available_to_empty : AcesUpStrategySpecification
-		{
-			protected override void given()
-			{
-				base.given();
-
-				MovingStrategy = new MoveFirstAvailableCardToEmptySpace(MovingStrategy);
-			}
-
-
-			[Test]
-			public void move()
-			{
-				// ♧5      ♡A  ♡4
-				//             ♧A
-
-				HasTopCards(Context.FaceUpCards,
-					new PlayingCard(PlayingCardSuit.Clubs, PlayingCardRank.Five),
-					new PlayingCard(PlayingCardSuit.Hearts, PlayingCardRank.Four),
-					new PlayingCard(PlayingCardSuit.Hearts, PlayingCardRank.Five),
-					new PlayingCard(PlayingCardSuit.Clubs, PlayingCardRank.Ace)
-				);
-
-				var m = MovingStrategy.MoveCard(Context);
-
-				HasTopCards(Context.FaceUpCards, 
-					new PlayingCard(PlayingCardSuit.Clubs, PlayingCardRank.Five),
-					null,
-					new PlayingCard(PlayingCardSuit.Hearts, PlayingCardRank.Five),
-					new PlayingCard(PlayingCardSuit.Clubs, PlayingCardRank.Ace)
-				);
-			}
+			Assert.AreEqual(expected.Suit, actual.Suit, $"Expected: {expected}, Actual: {actual}");
+			Assert.AreEqual(expected.Rank, actual.Rank, $"Expected: {expected}, Actual: {actual}");
 		}
 	}
 }
