@@ -102,7 +102,7 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 			if (oldWins <= 0)
 				Assert.Inconclusive($"Old gave no wins, so cannot compare strategies");
 
-			Assert.AreEqual(0, oldBetter, $"Old program gave better results {oldBetter} times, should be 0 times");
+			Assert.AreEqual(0, (int)oldBetter, $"Old program gave better results {oldBetter} times, should be 0 times");
 		}
 	}
 }
