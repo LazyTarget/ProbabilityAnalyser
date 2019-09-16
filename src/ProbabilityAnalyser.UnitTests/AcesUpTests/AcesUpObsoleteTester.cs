@@ -4,6 +4,8 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using ProbabilityAnalyser.Core.Extensions;
@@ -66,6 +68,12 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 
 					Console.WriteLine($"[{i}] Old: {oldPts}");
 					Console.WriteLine($"[{i}] New: {newPts}");
+
+					var settings = new JsonSerializerSettings();
+					settings.Formatting = Formatting.None;
+					settings.Converters.Add(new StringEnumConverter());
+					var json = JsonConvert.SerializeObject(deck.Cards, settings);
+					Console.WriteLine($"Deck: {json}");
 
 					Console.WriteLine("--- --- --- ---");
 				}
