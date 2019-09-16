@@ -21,7 +21,7 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 		[Test]
 		public void Test()
 		{
-			double times = 100;
+			double times = 10000;
 			Func<string, string> logFormatter = null;
 
 			double oldBetter = 0;
@@ -55,6 +55,11 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 
 				//var logDetails = oldPts > newPts;
 				var logDetails = oldPts == 100;
+				if (newPts == 100)
+				{
+					newWins++;
+				}
+
 				if (logDetails)
 				{
 					oldWins++;
@@ -83,11 +88,6 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests
 					Console.WriteLine($"Deck: {json}");
 
 					Console.WriteLine("--- --- --- ---");
-				}
-				else if (newPts == 100)
-				{
-					newWins++;
-					Console.WriteLine("New won but Old didn't!");
 				}
 			};
 
