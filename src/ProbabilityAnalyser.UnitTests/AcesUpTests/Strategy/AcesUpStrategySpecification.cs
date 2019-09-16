@@ -6,6 +6,7 @@ using NUnit.Framework;
 using ProbabilityAnalyser.Core.Extensions;
 using ProbabilityAnalyser.Core.Models;
 using ProbabilityAnalyser.Core.Program.AcesUp;
+using ProbabilityAnalyser.Core.Program.AcesUp.Prioritizer;
 using ProbabilityAnalyser.Core.Program.AcesUp.Strategy;
 
 namespace ProbabilityAnalyser.UnitTests.AcesUpTests.Strategy
@@ -28,6 +29,7 @@ namespace ProbabilityAnalyser.UnitTests.AcesUpTests.Strategy
 		{
 			var deck = new PlayingCardDeck(new PlayingCard[0]);
 			Context = new AcesUpRunContext(deck, CancellationToken.None);
+			Context.Prioritizer = new DefaultPilePrioritizer();
 		}
 
 		protected virtual void when()
