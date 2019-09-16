@@ -5,8 +5,7 @@ using NUnit.Framework;
 
 namespace ProbabilityAnalyser.UnitTests
 {
-	[TestFixture]
-	public class SpecificationBase : TestBase
+	public abstract class SpecificationBase : TestBase
 	{
 	}
 }
